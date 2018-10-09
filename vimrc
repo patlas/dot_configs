@@ -28,6 +28,10 @@ highlight CursorLine cterm=NONE ctermbg=darkgray
 "Set shortcut for CtrlP plugin
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
+
+"set NerdTree directory root to terminal one
+let g:NERDTreeChDirMode = 2
+
 "Enable cursor on mouse
 set mouse=a
 "Highlight line longer than colorcolumn size
@@ -37,8 +41,8 @@ match OverLength /\%81v.\+/
 "Auto braces completition
 set autoindent
 set smartindent
-inoremap { {<C-Return>}<Up><End><C-Return>
-inoremap ( ()<Left>
-inoremap [ []<Left>
+"inoremap { {<C-Return>}<Up><End><C-Return>
+"inoremap ( ()<Left>
+"inoremap [ []<Left>
 
 "let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
