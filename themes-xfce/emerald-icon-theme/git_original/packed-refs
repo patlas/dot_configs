@@ -1,0 +1,6 @@
+# pack-refs with: peeled fully-peeled sorted 
+0314083fa100555c5a33e69425d099edf8a5c798 refs/remotes/origin/master
+488b2b38aef263a9135e7ebd6df2a1a82df60b2e refs/tags/2.2
+fde9038fde2130715a8a072028086279c3bf329a refs/tags/2018.02.02
+fc931170dc37dd73c94c304fd9735bbbd3cd2309 refs/tags/emerald-icon-theme-2017-08-17
+b728f5d23170817b1ead9c949c38f446ad96f470 refs/tags/emerald-icon-theme-2017-09-24
