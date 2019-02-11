@@ -29,6 +29,19 @@ highlight CursorLine cterm=NONE ctermbg=darkgray
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 
+"Set leader sing (eg. for nerdcommenter usage)
+let mapleader = ","
+
+"Set config for NERDcommenter
+let g:NERDDefaultAlign = 'left'
+let g:NERDCommentEmptyLines = 1
+
+"VIM-AIRLINE extension for status bar (top, bottom)
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='tomorrow'
+let g:airline_powerline_fonts = 1
+let g:airline_solarized_bg='dark'
+
 "set NerdTree directory root to terminal one
 let g:NERDTreeChDirMode = 2
 
