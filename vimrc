@@ -30,7 +30,10 @@ let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 
 "Set leader sing (eg. for nerdcommenter usage)
-let mapleader = ","
+let mapleader = "\\"
+
+"Set python3 support for python-mode -> plugin for python3 autocomplete
+let g:pymode_python = 'python3'
 
 "Set config for NERDcommenter
 let g:NERDDefaultAlign = 'left'
@@ -58,3 +61,7 @@ set smartindent
 "inoremap ( ()<Left>
 "inoremap [ []<Left>
 
+"configuration for vim-rtags
+let g:agsAutoLaunchRdm = 1
+"let g:rtagsRcCmd='/home/patlas/Programs/rtags/bin/rc'
+"let g:rtagsRdmCmd='/home/patlas/Programs/rtags/bin/rdm'
