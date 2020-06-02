@@ -1,10 +1,17 @@
 call plug#begin('~/.config/nvim/autoload/plugged')
-	Plug 'scrooloose/NERDTree'
-	Plug 'neoclide/coc.nvim', {'branch': 'release'}
-	Plug 'iCyMind/NeoSolarized'
-	Plug 'vim-airline/vim-airline'
-	Plug 'vim-airline/vim-airline-themes'
-	"Plug 'altercation/vim-colors-solarized', {'branch': 'master'}
+    Plug 'scrooloose/NERDTree'
+    Plug 'preservim/nerdcommenter'
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'jiangmiao/auto-pairs'
+    Plug 'iCyMind/NeoSolarized'
+    Plug 'vim-airline/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
+    Plug 'ctrlpvim/ctrlp.vim'
+    Plug 'jremmen/vim-ripgrep'
+    Plug 'mbbill/undotree'
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
+    "Plug 'altercation/vim-colors-solarized', {'branch': 'master'}
 call plug#end()
 
 set termguicolors
@@ -28,14 +35,32 @@ set shiftwidth=4
 set smarttab
 set exrc
 set secure
+set nowrap
+set smartcase
+set noswapfile
+set nobackup
+set undodir=~/.vim/undodir
+set undofile
+set incsearch
+
+"Auto braces completition
+set autoindent
+set smartindent
+
+"Highlight cursor line
+set cursorline
+highlight CursorLine cterm=NONE ctermbg=darkgray
+"Enable cursor on mouse
+set mouse=a
 
 " set colorcolumn=120 
 highlight darkgray ctermbg=darkgray
 highlight Normal ctermfg=gray
 
-"Highlight cursor line
-set cursorline
-highlight CursorLine cterm=NONE ctermbg=darkgray
+"Highlight line longer than colorcolumn size
+highlight ColorColumn ctermbg=NONE
+highlight OverLength ctermbg=NONE cterm=bold
+match OverLength /\%81v.\+/
 
 "VIM-AIRLINE extension for status bar (top, bottom)
 let g:airline#extensions#tabline#enabled = 1
@@ -50,12 +75,7 @@ let g:NERDTreeChDirMode = 2
 let g:NERDDefaultAlign = 'left'
 let g:NERDCommentEmptyLines = 1
 
-"Enable cursor on mouse
-set mouse=a
-""Highlight line longer than colorcolumn size
-highlight ColorColumn ctermbg=NONE
-highlight OverLength ctermbg=NONE cterm=bold
-match OverLength /\%81v.\+/
-"Auto braces completition
-set autoindent
-set smartindent
+" mapleader to space
+let mapleader = " "
+
+nnoremap <leader>u :UndotreeShow<CR>
