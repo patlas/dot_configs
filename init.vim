@@ -4,6 +4,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
     Plug 'clangd/coc-clangd', {'do': 'npm install'}
     Plug 'neoclide/coc-python', {'do': 'npm install'}
+    Plug 'neoclide/coc-json', {'do': 'npm install'}
     Plug 'jiangmiao/auto-pairs'
     Plug 'iCyMind/NeoSolarized'
     Plug 'vim-airline/vim-airline'
@@ -13,6 +14,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'mbbill/undotree'
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
+    Plug 'christoomey/vim-tmux-navigator'
     "Plug 'altercation/vim-colors-solarized', {'branch': 'master'}
 call plug#end()
 
@@ -26,8 +28,10 @@ let g:neosolarized_underline = 1
 let g:neosolarized_italic = 0
 let g:neosolarized_termBoldAsBright = 1
 set background=dark
+set t_Co=256
 colorscheme NeoSolarized
 
+set hidden
 set number
 set clipboard=unnamedplus
 set tabstop=8
@@ -98,6 +102,9 @@ nnoremap <leader>uf :UndotreeFocus<CR>
 nnoremap <leader>c :call NERDComment(0,"toggle")<CR> 
 vnoremap <leader>c :call NERDComment(0,"toggle")<CR>
 
+" Remaps for NerdTree 
+" nt - nertdtree toggle
+
 " CoC remaps and configs
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
@@ -135,5 +142,4 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)"
-"     "
-"                       "
+nnoremap <leader>cr :CocRestart
