@@ -15,6 +15,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
     Plug 'christoomey/vim-tmux-navigator'
+    Plug 'iamcco/coc-project', {'do': 'npm install'}
     "Plug 'altercation/vim-colors-solarized', {'branch': 'master'}
 call plug#end()
 
@@ -95,13 +96,54 @@ let mapleader = " "
 let g:undotree_WindowLayout = 2
 
 " Remaps for UndoTree
-nnoremap <leader>ut :UndotreeToggle<CR> 
+"nnoremap <leader>ut :UndotreeToggle<CR> 
 nnoremap <leader>uf :UndotreeFocus<CR>
+
 
 " Remaps for NerdCommenter
 nnoremap <leader>c :call NERDComment(0,"toggle")<CR> 
 vnoremap <leader>c :call NERDComment(0,"toggle")<CR>
 
+let g:undoTree_enabled = 0
+let g:nerdTree_enabled = 0
+" if NERDTree opened and call 
+function! ShowUndoTree()
+    if exists("g:NERDTree") && g:NERDTree.IsOpen()
+       execute ':NERDTreeToggle'
+       let g:nerdTree_enabled = 1
+    endif
+    
+    execute ':UndotreeShow'
+    let g:undoTree_enabled = 1
+endfunction
+
+function! ToggleUndoTree()
+    if g:undoTree_enabled == 0
+        call ShowUndoTree()
+    else
+        execute ':UndotreeHide'
+        let g:undoTree_enabled = 0
+        if g:nerdTree_enabled == 1
+            execute ':NERDTreeToggle'
+        endif
+    endif
+endfunction
+
+function! ToggleNerdTree()
+    if g:undoTree_enabled == 1
+        execute ':UndotreeHide'
+        let g:undoTree_enabled = 0
+    endif
+    if exists("g:NERDTree") && g:NERDTree.IsOpen()
+        let g:nerdTree_enabled = 1
+    else
+        let g:nerdTree_enabled = 0
+    endif
+    execute ':NERDTreeToggle'
+endfunction
+
+nnoremap <leader>ut :call ToggleUndoTree()<CR>
+nnoremap <leader>nt :call ToggleNerdTree()<CR>
 " Remaps for NerdTree 
 " nt - nertdtree toggle
 
