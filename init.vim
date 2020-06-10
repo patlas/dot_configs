@@ -1,7 +1,7 @@
 call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'scrooloose/NERDTree'
     Plug 'preservim/nerdcommenter'
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'neoclide/coc.nvim', ", {'branch': 'release'}
     Plug 'clangd/coc-clangd', {'do': 'npm install'}
     Plug 'neoclide/coc-python', {'do': 'npm install'}
     Plug 'neoclide/coc-json', {'do': 'npm install'}
@@ -16,7 +16,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'junegunn/fzf.vim'
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'iamcco/coc-project', {'do': 'npm install'}
-    "Plug 'altercation/vim-colors-solarized', {'branch': 'master'}
+    Plug 'prabirshrestha/async.vim'
 call plug#end()
 
 set termguicolors
@@ -33,6 +33,9 @@ set t_Co=256
 colorscheme NeoSolarized
 
 set hidden
+set cmdheight=2
+set updatetime=300
+set shortmess+=c
 set number
 set clipboard=unnamedplus
 set tabstop=8
@@ -46,6 +49,7 @@ set nowrap
 set smartcase
 set noswapfile
 set nobackup
+set nowritebackup
 set undodir=~/.vim/undodir
 set undofile
 set incsearch
@@ -185,3 +189,16 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)"
 nnoremap <leader>cr :CocRestart
+
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
