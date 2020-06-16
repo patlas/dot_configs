@@ -194,7 +194,7 @@ nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
 " Search workspace symbols.
 nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
 " Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+nnoremap <silent> <leader>h :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
@@ -207,3 +207,20 @@ endfunction
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
+
+" set rip grep root folder (if find file/direcotry [compile_commands.json/.git] treat it as root)
+let g:rg_root_types = ['compile_commands.json', '.git']
+
+" FZF mapping
+nnoremap <leader>f :BLines  
+nnoremap <S-f> :Rg 
+nnoremap <A-f> :Files<CR>
+nnoremap <A-b> :Buffers<CR>
+
+
+" vim swithing buffers
+nnoremap <Tab> :bn <CR> 
+nnoremap <S-Tab> :bp <CR> 
+
+" Make tab to go to matchin pairs
+nnoremap <leader>m <S-%>
