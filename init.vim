@@ -224,3 +224,11 @@ nnoremap <S-Tab> :bp <CR>
 
 " Make tab to go to matchin pairs
 nnoremap <leader>m <S-%>
+
+" Go outside braces or other pair
+" at first disable default mapping
+let g:AutoPairsJump = ''
+inoremap <buffer> <silent> <C-l> <ESC>:call AutoPairsJump()<CR>a
+
+" Set alt enter to go to new line while in insert mode
+inoremap <silent> <M-CR> <ESC>$o
