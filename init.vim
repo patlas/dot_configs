@@ -17,6 +17,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'iamcco/coc-project', {'do': 'npm install'}
     Plug 'prabirshrestha/async.vim'
+    Plug 'morhetz/gruvbox'
 call plug#end()
 
 set termguicolors
@@ -30,7 +31,8 @@ let g:neosolarized_italic = 0
 let g:neosolarized_termBoldAsBright = 1
 set background=dark
 set t_Co=256
-colorscheme NeoSolarized
+colorscheme gruvbox
+"colorscheme NeoSolarized
 
 set hidden
 set cmdheight=2
@@ -211,12 +213,19 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 " set rip grep root folder (if find file/direcotry [compile_commands.json/.git] treat it as root)
 let g:rg_root_types = ['compile_commands.json', '.git']
 
+" FZF add preview window      
+let g:fzf_preview_window = 'right:60%' 
+let g:fzf_rg_color = 'fg:#ebdbb2,bg:#282828,hl:#fabd2f,fg+:#ebdbb2,bg+:#3c3836,hl+:#fabd2f,info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#665c54'
 " FZF mapping
 nnoremap <leader>f :BLines  
-nnoremap <S-f> :Rg 
+nnoremap <S-f> :RgAdv 
 nnoremap <A-f> :Files<CR>
 nnoremap <A-b> :Buffers<CR>
 
+command! -bang -nargs=* RgAdv
+            \ call fzf#vim#grep(
+            \   'rg --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')), 1,
+            \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
 
 " vim swithing buffers
 nnoremap <Tab> :bn <CR> 
