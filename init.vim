@@ -222,11 +222,15 @@ nnoremap <S-f> :RgAdv
 nnoremap <A-f> :Files<CR>
 nnoremap <A-b> :Buffers<CR>
 
-command! -bang -nargs=* RgAdv
+command! -bang -nargs=* RgAdvOld
             \ call fzf#vim#grep(
             \   'rg --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')), 1,
             \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
 
+command! -bang -nargs=* RgAdv
+            \ call fzf#vim#grep(
+            \   'grep -rni -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')), 1,
+            \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
 " vim swithing buffers
 nnoremap <Tab> :bn <CR> 
 nnoremap <S-Tab> :bp <CR> 
