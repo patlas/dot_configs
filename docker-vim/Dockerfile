@@ -1,4 +1,5 @@
-FROM  buster-slim
+#FROM  debian:buster-slim
+FROM  debian:bullseye-slim
 
 #COPY qemu-arm-static /usr/bin
 
@@ -7,18 +8,22 @@ FROM  buster-slim
 
 RUN apt-get update \
     && apt-get -y install \
-    build-essential \
+    #build-essential \
     wget \
+    curl \
+    tmux \
     git \
-    g++ \
+    #g++ \
     python3 \
     python3-pip \
+    clangd \
     nodejs \
     npm \
-    clangd \
     fzf \
     neovim 
 
-
+# Add automatic curl for downloading plug
+# Add automatic download dot_configs and copy init.vim into directory (~/.config/nvim) - create if first
+# Manually install yarn
 #COPY . .
 #CMD ["npm", "start"]:w
