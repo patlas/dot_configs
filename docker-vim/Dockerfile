@@ -36,6 +36,8 @@ RUN cd /tmp && git clone https://github.com/patlas/dot_configs.git \
 
 RUN cd ~/.config/nvim/autoload/plugged/coc.nvim && yarn install --frozen-lockfile
 
+# install pylint, install curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
+
 # Add automatic curl for downloading plug
 # Add automatic download dot_configs and copy init.vim into directory (~/.config/nvim) - create if first
 # Manually install yarn
