@@ -20,10 +20,6 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'morhetz/gruvbox'
 call plug#end()
 
-" Additional option in cale in system is too old version of node -> link
-" manualy recompile one
-let g:coc_node_path = "/home/p.las2/TOOLS/node-v10.12.0/out/Release/node"
-
 set termguicolors
 " normal low high
 let g:neosolarized_contrast = "normal"
@@ -39,6 +35,10 @@ let g:gruvbox_contrast_dark = "hard"
 let g:gruvbox_invert_selection = "0"
 colorscheme gruvbox
 "colorscheme NeoSolarized
+
+" Additional option in cale in system is too old version of node -> link
+" manualy recompile one
+" let g:coc_node_path = "/home/p.las2/TOOLS/node-v10.12.0/out/Release/node"
 
 set background=dark
 set hidden
@@ -253,10 +253,13 @@ nnoremap <S-Tab> :bp <CR>
 " Make tab to go to matchin pairs
 nnoremap <leader>m <S-%>
 
+" Map yank (copy) command to copy data into vim and clipboard buffer
+set clipboard+=unnamedplus
 " Go outside braces or other pair
 " at first disable default mapping
-let g:AutoPairsJump = ''
-inoremap <buffer> <silent> <C-l> <ESC>:call AutoPairsJump()<CR>a
+" let g:AutoPairsJump = ''
+"inoremap <buffer> <silent> <C-l> <ESC>:call AutoPairsJump()<CR>a
+inoremap <silent> <C-l> <ESC>:call AutoPairsJump()<CR>a
 
 " Set alt enter to go to new line while in insert mode
 inoremap <silent> <M-CR> <ESC>$o
