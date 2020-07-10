@@ -29,11 +29,14 @@ let g:neosolarized_bold = 1
 let g:neosolarized_underline = 1
 let g:neosolarized_italic = 0
 let g:neosolarized_termBoldAsBright = 1
-set background=dark
 set t_Co=256
+
+let g:gruvbox_contrast_dark = "hard"
+let g:gruvbox_invert_selection = "0"
 colorscheme gruvbox
 "colorscheme NeoSolarized
 
+set background=dark
 set hidden
 set cmdheight=2
 set updatetime=300
@@ -67,6 +70,8 @@ set cursorline
 highlight CursorLine cterm=NONE ctermbg=darkgray
 "Enable cursor on mouse
 set mouse=a
+" set auto change directory to current buffer
+" set autochdir
 
 " set colorcolumn=120 
 highlight darkgray ctermbg=darkgray
@@ -94,6 +99,8 @@ let g:NERDCompactSexyComs = 1
 let g:NERDTrimTrailingWhitespace = 1
 let g:NERDToggleCheckAllLines = 1
 let g:NERDCustomDelimiters = { 'c': { 'left': '//' } }
+let g:NERDTreeChDirMode = 2
+
 
 " mapleader to space
 let mapleader = " "
