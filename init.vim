@@ -20,6 +20,10 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'morhetz/gruvbox'
 call plug#end()
 
+" Additional option in cale in system is too old version of node -> link
+" manualy recompile one
+let g:coc_node_path = "/home/p.las2/TOOLS/node-v10.12.0/out/Release/node"
+
 set termguicolors
 " normal low high
 let g:neosolarized_contrast = "normal"
@@ -202,8 +206,12 @@ nnoremap <leader>cr :CocRestart
 nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
 " Search workspace symbols.
 nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Use K to show documentation in preview window
+" Use h to show documentation in preview window
 nnoremap <silent> <leader>h :call <SID>show_documentation()<CR>
+" Set rr to rename
+nnoremap <leader>rr <Plug>(coc-rename)
+" Set ff to search
+nnoremap <leader>ff :CocSearch <C-R>=expand("<cword>")<CR><CR>
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
