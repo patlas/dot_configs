@@ -263,3 +263,7 @@ inoremap <silent> <C-l> <ESC>:call AutoPairsJump()<CR>a
 
 " Set alt enter to go to new line while in insert mode
 inoremap <silent> <M-CR> <ESC>$o
+
+" Open horizontal bottom terminal
+nnoremap <silent> <leader>t :split term://bash<CR>i
+

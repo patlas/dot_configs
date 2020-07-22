@@ -8,6 +8,7 @@
     - neovim
     - fzf
     - git
+    - bat (modern version of cat with coloring)
 
 1) After install neovim create directory ~/.config/nvim
 2) Copy nvim.init into ~/.config/nvim

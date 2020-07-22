@@ -21,6 +21,7 @@ RUN apt-get update \
     npm \
     fzf \
     neovim 
+# bat - moder versin of cat with coloring etc
 
 # install vim-plug -> plugin manager
 RUN sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
