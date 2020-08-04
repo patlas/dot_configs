@@ -18,10 +18,18 @@ sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
 ## install yarn
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+1) from debian resources
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+    sudo apt update && sudo apt install yarn
 
-sudo apt update && sudo apt install yarn
+2) from manual bash install
+    curl -o- -L https://yarnpkg.com/install.sh | bash
 
-## alternative yarn
-curl -o- -L https://yarnpkg.com/install.sh | bash
+## installing gruvbox theme in xterm
+1) for a global installation the theme files need to be put into
+    /usr/share/xfce4/terminal/colorschemes
+
+2) for local
+    mkdir -p ~/.local/share/xfce4/terminal/colorschemes
+    cp *.theme ~/.local/share/xfce4/terminal/colorschemes/
