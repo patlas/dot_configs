@@ -282,4 +282,4 @@ nnoremap <silent> <leader>t :belowright split term://bash<CR>i
 nnoremap <silent> <leader>q :bw <CR>
 
 " add showing differnce in non saved file
-":w !diff % -
+nnoremap <leader>diff :w !diff % -<CR>
