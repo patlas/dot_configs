@@ -2,6 +2,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'scrooloose/NERDTree'
     Plug 'preservim/nerdcommenter'
     Plug 'neoclide/coc.nvim', ", {'branch': 'release'}
+    Plug 'neoclide/coc-highlight',
     Plug 'clangd/coc-clangd', {'do': 'npm install'}
     Plug 'neoclide/coc-python', {'do': 'npm install'}
     Plug 'neoclide/coc-json', {'do': 'npm install'}
@@ -259,11 +260,26 @@ set clipboard+=unnamedplus
 " at first disable default mapping
 " let g:AutoPairsJump = ''
 "inoremap <buffer> <silent> <C-l> <ESC>:call AutoPairsJump()<CR>a
+
+" ctrl+l go to matchin pair
 inoremap <silent> <C-l> <ESC>:call AutoPairsJump()<CR>a
+
+" alt+l go to the end of line
+inoremap <M-l> <ESC>$a
+nnoremap <M-l> $
+
+" alt+h go to the beginning of line
+inoremap <M-h> <ESC>0i
+nnoremap <M-h> 0
 
 " Set alt enter to go to new line while in insert mode
 inoremap <silent> <M-CR> <ESC>$o
 
 " Open horizontal bottom terminal
-nnoremap <silent> <leader>t :split term://bash<CR>i
+nnoremap <silent> <leader>t :belowright split term://bash<CR>i
 
+" leader+q close current buffer
+nnoremap <silent> <leader>q :bw <CR>
+
+" add showing differnce in non saved file
+":w !diff % -
