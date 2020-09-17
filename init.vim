@@ -283,3 +283,7 @@ nnoremap <silent> <leader>q :bw <CR>
 
 " add showing differnce in non saved file
 nnoremap <leader>diff :w !diff % -<CR>
+
+" insert tab into selection
+xnoremap <Tab> >gv
+xnoremap <S-Tab> <gv
