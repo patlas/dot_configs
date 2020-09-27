@@ -1,0 +1,5 @@
+{
+    "clangd.semanticHighlighting": true,
+    "clangd.arguments": ["--background-index","--limit-results=0", "-j=4"],
+    "coc.preferences.colorSupport": true
+}

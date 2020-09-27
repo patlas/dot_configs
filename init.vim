@@ -19,6 +19,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'iamcco/coc-project', {'do': 'npm install'}
     Plug 'prabirshrestha/async.vim'
     Plug 'morhetz/gruvbox'
+    Plug 'jackguo380/vim-lsp-cxx-highlight'
 call plug#end()
 
 set termguicolors
@@ -287,3 +288,6 @@ nnoremap <leader>diff :w !diff % -<CR>
 " insert tab into selection
 xnoremap <Tab> >gv
 xnoremap <S-Tab> <gv
+
+" highligh variables under cursor
+:autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
