@@ -157,8 +157,11 @@ function! ToggleNerdTree()
         let g:nerdTree_enabled = 1
     else
         let g:nerdTree_enabled = 0
+        execute ':NERDTreeFind'
+        return
     endif
     execute ':NERDTreeToggle'
+
 endfunction
 
 nnoremap <leader>ut :call ToggleUndoTree()<CR>
@@ -232,6 +235,8 @@ let g:rg_root_types = ['compile_commands.json', '.git']
 
 " FZF add preview window      
 let g:fzf_preview_window = 'right:60%' 
+let g:fzf_preview_use_dev_icons = 0
+
 let g:fzf_rg_color = 'fg:#ebdbb2,bg:#282828,hl:#fabd2f,fg+:#ebdbb2,bg+:#3c3836,hl+:#fabd2f,info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#665c54'
 " FZF mapping
 nnoremap <leader>f :BLines  
@@ -252,8 +257,9 @@ command! -bang -nargs=* RgAdv
 nnoremap <Tab> :bn <CR> 
 nnoremap <S-Tab> :bp <CR> 
 
-" Make tab to go to matchin pairs
+" Make <leader>+m to go to matchin pairs
 nnoremap <leader>m <S-%>
+vnoremap <leader>m <S-%>
 
 " Map yank (copy) command to copy data into vim and clipboard buffer
 set clipboard+=unnamedplus
@@ -278,7 +284,8 @@ inoremap <silent> <M-CR> <ESC>$o
 
 " Open horizontal bottom terminal
 nnoremap <silent> <leader>t :belowright split term://bash<CR>i
-
+" Open terminal in current file directory
+nnoremap <silent> <S-t> :belowright split term://bash -c 'cd %:p:h; exec bash'<CR>i
 " leader+q close current buffer
 nnoremap <silent> <leader>q :bw <CR>
 
@@ -291,3 +298,21 @@ xnoremap <S-Tab> <gv
 
 " highligh variables under cursor
 :autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
+
+
+" show jump list and select which one to go to
+function! GotoJump()
+  jumps
+  let j = input("Please select your jump: ")
+  if j != ''
+    let pattern = '\v\c^\+'
+    if j =~ pattern
+      let j = substitute(j, pattern, '', 'g')
+      execute "normal " . j . "\<c-i>"
+    else
+      execute "normal " . j . "\<c-o>"
+    endif
+  endif
+endfunction
+
+nmap <leader>j :call GotoJump()<CR>
