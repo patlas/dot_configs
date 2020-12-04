@@ -117,6 +117,20 @@ if ! shopt -oq posix; then
 fi
 export PS1="[\W]\\$ "
 bind 'set show-all-if-ambiguous on'
-bind 'completition-ignore-case on'
+bind 'set completion-ignore-case on'
 bind '"\e[Z":menu-complete-backward'
 bind 'TAB:menu-complete'
+
+export P4FS=/home/patlas/Workspaces/
+export P4PORT=106.120.101.53:1999                                             
+export P4USER=p.las2
+
+alias p4="/home/patlas/TOOLS/p4"
+
+# VCCB shortcuts    
+alias vccb="cd /home/patlas/Workspaces/NOVUS__INTEG__RAN__SVR21B__VZW__21B.p.las2_local/Application/NR_CALL_APP/VCCB"    
+alias vp4="source /home/patlas/Workspaces/p4ws.sh"    
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
