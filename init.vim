@@ -10,7 +10,7 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'iCyMind/NeoSolarized'
     Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
-    Plug 'ctrlpvim/ctrlp.vim'
+    "Plug 'ctrlpvim/ctrlp.vim'
     Plug 'jremmen/vim-ripgrep'
     Plug 'mbbill/undotree'
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -93,9 +93,29 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme='tomorrow'
 let g:airline_powerline_fonts = 1
 let g:airline_solarized_bg='dark'
+let g:airline#extensions#tabline#show_buffers = 1
+
+"function !CocAirline()
+"    return get(b:, 'coc_current_function', 'NOT IN FUNCTION')
+"endfunction
+
+"function! AirlineInit()
+"    call airline#parts#define_function('test', %{get(b:, 'coc_current_function', '')})
+"    let g:airline_section_x = airline#section#create_left(['test', 'filetype'])
+"endfunction
+
+"autocmd CursorHold * call CocAction("getCurrentFunctionSymbol")
+"autocmd User AirlineAfterInit call AirlineInit()
+
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 "set NerdTree directory root to terminal one
 let g:NERDTreeChDirMode = 2
+
+"set NerdTree more pretty
+" minimal UI disable info that '?' open help menu
+let g:NERDTreeMinimalUI = 1
+let g:NERDTreeDirArrows = 1
 
 "Set config for NERDcommenter
 let g:NERDDefaultAlign = 'left'
@@ -253,9 +273,13 @@ command! -bang -nargs=* RgAdv
             \ call fzf#vim#grep(
             \   'grep -rni -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')), 1,
             \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
-" vim swithing buffers
+" vim swithing buffers using Tab
 nnoremap <Tab> :bn <CR> 
 nnoremap <S-Tab> :bp <CR> 
+" set ctrl+b to switch previous buffer
+nnoremap <C-b> :b# <CR>
+" leader+q close current buffer
+nnoremap <leader>q :bw <CR>
 
 " Make <leader>+m to go to matchin pairs
 nnoremap <leader>m <S-%>
@@ -282,13 +306,18 @@ nnoremap <M-h> 0
 " Set alt enter to go to new line while in insert mode
 inoremap <silent> <M-CR> <ESC>$o
 
+" set ctrl p to past in insermode
+inoremap <silent> <C-p> <ESC>pa
+nnoremap <silent> <C-p> :pu<CR>
+
 " Open horizontal bottom terminal
 nnoremap <silent> <leader>t :belowright split term://bash<CR>i
 " Open terminal in current file directory
 nnoremap <silent> <S-t> :belowright split term://bash -c 'cd %:p:h; exec bash'<CR>i
-" leader+q close current buffer
-nnoremap <silent> <leader>q :bw <CR>
-
+" set ctrl+'.' to increase split window size by 10
+nnoremap <C-m> :vertical resize +10 <CR>
+" set ctrl+',' to decrease split window size by 10
+nnoremap <C-n> :vertical resize -10 <CR>
 " add showing differnce in non saved file
 nnoremap <leader>diff :w !diff % -<CR>
 

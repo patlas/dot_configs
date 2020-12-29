@@ -2,5 +2,6 @@
     "clangd.semanticHighlighting": true,
     "clangd.arguments": ["--background-index","--limit-results=0", "-j=4", "--pch-storage=disk", "--log=verbose"],
     "coc.preferences.colorSupport": true,
-    "coc.preferences.jumpCommand": "drop"
+    "coc.preferences.jumpCommand": "drop",
+    "coc.preferences.currentFunctionSymbolAutoUpdate": true
 }
