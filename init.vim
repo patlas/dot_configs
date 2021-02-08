@@ -1,11 +1,8 @@
-call plug#begin('~/.config/nvim/autoload/plugged')
+call plug#begin('~/.config/nvim/autoloadNew/plugged')
+    Plug 'neovim/nvim-lsp'
+    Plug 'nvim-lua/completion-nvim'
     Plug 'scrooloose/NERDTree'
     Plug 'preservim/nerdcommenter'
-    Plug 'neoclide/coc.nvim', ", {'branch': 'release'}
-    Plug 'neoclide/coc-highlight',
-    Plug 'clangd/coc-clangd', {'do': 'npm install'}
-    Plug 'neoclide/coc-python', {'do': 'npm install'}
-    Plug 'neoclide/coc-json', {'do': 'npm install'}
     Plug 'jiangmiao/auto-pairs'
     Plug 'iCyMind/NeoSolarized'
     Plug 'vim-airline/vim-airline'
@@ -16,7 +13,6 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
     Plug 'christoomey/vim-tmux-navigator'
-    Plug 'iamcco/coc-project', {'do': 'npm install'}
     Plug 'prabirshrestha/async.vim'
     Plug 'morhetz/gruvbox'
     Plug 'jackguo380/vim-lsp-cxx-highlight'
@@ -56,7 +52,8 @@ set shiftwidth=4
 set smarttab
 set exrc
 set secure
-set nowrap
+set wrap
+set linebreak
 set smartcase
 set noswapfile
 set nobackup
@@ -88,6 +85,7 @@ highlight ColorColumn ctermbg=NONE
 highlight OverLength ctermbg=NONE cterm=bold
 match OverLength /\%81v.\+/
 
+
 "VIM-AIRLINE extension for status bar (top, bottom)
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme='tomorrow'
@@ -95,19 +93,6 @@ let g:airline_powerline_fonts = 1
 let g:airline_solarized_bg='dark'
 let g:airline#extensions#tabline#show_buffers = 1
 
-"function !CocAirline()
-"    return get(b:, 'coc_current_function', 'NOT IN FUNCTION')
-"endfunction
-
-"function! AirlineInit()
-"    call airline#parts#define_function('test', %{get(b:, 'coc_current_function', '')})
-"    let g:airline_section_x = airline#section#create_left(['test', 'filetype'])
-"endfunction
-
-"autocmd CursorHold * call CocAction("getCurrentFunctionSymbol")
-"autocmd User AirlineAfterInit call AirlineInit()
-
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 "set NerdTree directory root to terminal one
 let g:NERDTreeChDirMode = 2
@@ -184,70 +169,10 @@ function! ToggleNerdTree()
 
 endfunction
 
-nnoremap <leader>ut :call ToggleUndoTree()<CR>
-nnoremap <leader>nt :call ToggleNerdTree()<CR>
 " Remaps for NerdTree 
 " nt - nertdtree toggle
-
-" CoC remaps and configs
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-" position. Coc only does snippet and additional edit on confirm.
-" <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
-
-if exists('*complete_info')
-  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-else
-  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-endif
-
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-" GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)"
-nnoremap <leader>cr :CocRestart
-" Find symbol of current document.
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols.
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Use h to show documentation in preview window
-nnoremap <silent> <leader>h :call <SID>show_documentation()<CR>
-" Set rr to rename
-nnoremap <leader>rr <Plug>(coc-rename)
-" Set ff to search
-nnoremap <leader>ff :CocSearch <C-R>=expand("<cword>")<CR><CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
+nnoremap <leader>ut :call ToggleUndoTree()<CR>
+nnoremap <leader>nt :call ToggleNerdTree()<CR>
 
 
 " set rip grep root folder (if find file/direcotry [compile_commands.json/.git] treat it as root)
@@ -345,3 +270,63 @@ function! GotoJump()
 endfunction
 
 nmap <leader>j :call GotoJump()<CR>
+
+
+
+
+
+
+
+
+
+set completeopt-=preview
+
+"use omni completion provided by lsp
+autocmd Filetype python setlocal omnifunc=v:lua.vim.lsp.omnifunc
+
+" some shortcuts
+nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
+nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
+nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+
+set completeopt=menuone,noinsert,noselect
+
+lua << EOF
+local on_attach_vim = function(client)
+require'completion'.on_attach(client)
+end
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+vim.lsp.diagnostic.on_publish_diagnostics, {
+-- Enable underline, use default values
+underline = true,
+-- Enable virtual text, override spacing to 4
+virtual_text = {
+spacing = 4,
+prefix = '~',
+},
+-- Use a function to dynamically turn signs off
+-- and on, using buffer local variables
+signs = function(bufnr, client_id)
+local ok, result = pcall(vim.api.nvim_buf_get_var, bufnr, 'show_signs')
+-- No buffer local variable set, so just enable by default
+if not ok then
+    return true
+end
+
+return result
+end,
+-- Disable a feature
+update_in_insert = false,
+}
+)
+require'lspconfig'.clangd.setup{on_attach=on_attach_vim}
+EOF
+
+
+
