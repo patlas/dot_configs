@@ -1,6 +1,6 @@
 call plug#begin('~/.config/nvim/autoloadNew/plugged')
-    Plug 'neovim/nvim-lsp'
-    Plug 'nvim-lua/completion-nvim'
+Plug 'neovim/nvim-lsp'
+Plug 'nvim-lua/completion-nvim'
     Plug 'scrooloose/NERDTree'
     Plug 'preservim/nerdcommenter'
     Plug 'jiangmiao/auto-pairs'
@@ -251,7 +251,7 @@ xnoremap <Tab> >gv
 xnoremap <S-Tab> <gv
 
 " highligh variables under cursor
-:autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
+":autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
 
 
 " show jump list and select which one to go to
@@ -285,17 +285,30 @@ set completeopt-=preview
 autocmd Filetype python setlocal omnifunc=v:lua.vim.lsp.omnifunc
 
 " some shortcuts
-nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
-nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
-nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
-nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
-nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
-nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
-nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+nnoremap <silent> <leader>gd    <cmd>lua vim.lsp.buf.declaration()<CR>
+nnoremap <silent> <leader>gs    <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> <leader>h     <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <silent> <leader>gi    <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap <silent> <leader>sh     <cmd>lua vim.lsp.buf.signature_help()<CR>
+nnoremap <silent> <leader>gt    <cmd>lua vim.lsp.buf.type_definition()<CR>
+nnoremap <silent> <leader>gr    <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <silent> <leader>s    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+nnoremap <silent> <leader>w    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+
+
+
+
+"inoremap <silent><TAB> <C-n>
+"inoremap <silent><S-TAB> <C-p>
+inoremap <silent><C-Space>      <cmd>lua vim.lsp.buf.completion()<CR>
+
+
+autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()
+autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
+autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
 
 set completeopt=menuone,noinsert,noselect
+let g:completition_matching_strategy_list = ['exact', 'substring', 'fuzzy']
 
 lua << EOF
 local on_attach_vim = function(client)
