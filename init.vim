@@ -1,21 +1,23 @@
 call plug#begin('~/.config/nvim/autoloadNew/plugged')
-Plug 'neovim/nvim-lsp'
-Plug 'nvim-lua/completion-nvim'
+    Plug 'neovim/nvim-lsp'
+    Plug 'nvim-lua/completion-nvim'
     Plug 'scrooloose/NERDTree'
     Plug 'preservim/nerdcommenter'
     Plug 'jiangmiao/auto-pairs'
     Plug 'iCyMind/NeoSolarized'
     Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
-    "Plug 'ctrlpvim/ctrlp.vim'
     Plug 'jremmen/vim-ripgrep'
     Plug 'mbbill/undotree'
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
     Plug 'christoomey/vim-tmux-navigator'
-    Plug 'prabirshrestha/async.vim'
     Plug 'morhetz/gruvbox'
+    Plug 'jaxbot/semantic-highlight.vim'
     Plug 'jackguo380/vim-lsp-cxx-highlight'
+
+    Plug 'RishabhRD/popfix'
+    Plug 'RishabhRD/nvim-lsputils'
 call plug#end()
 
 set termguicolors
@@ -41,7 +43,7 @@ colorscheme gruvbox
 set background=dark
 set hidden
 set cmdheight=2
-set updatetime=300
+set updatetime=100
 set shortmess+=c
 set number
 set clipboard=unnamedplus
@@ -240,9 +242,9 @@ nnoremap <silent> <leader>t :belowright split term://bash<CR>i
 " Open terminal in current file directory
 nnoremap <silent> <S-t> :belowright split term://bash -c 'cd %:p:h; exec bash'<CR>i
 " set ctrl+'.' to increase split window size by 10
-nnoremap <C-m> :vertical resize +10 <CR>
+"nnoremap <C-m> :vertical resize +10 <CR>
 " set ctrl+',' to decrease split window size by 10
-nnoremap <C-n> :vertical resize -10 <CR>
+"nnoremap <C-n> :vertical resize -10 <CR>
 " add showing differnce in non saved file
 nnoremap <leader>diff :w !diff % -<CR>
 
@@ -285,8 +287,8 @@ set completeopt-=preview
 autocmd Filetype python setlocal omnifunc=v:lua.vim.lsp.omnifunc
 
 " some shortcuts
-nnoremap <silent> <leader>gd    <cmd>lua vim.lsp.buf.declaration()<CR>
-nnoremap <silent> <leader>gs    <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> <leader>gs    <cmd>lua vim.lsp.buf.declaration()<CR>
+nnoremap <silent> <leader>gd    <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> <leader>h     <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap <silent> <leader>gi    <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> <leader>sh     <cmd>lua vim.lsp.buf.signature_help()<CR>
@@ -312,34 +314,58 @@ let g:completition_matching_strategy_list = ['exact', 'substring', 'fuzzy']
 
 lua << EOF
 local on_attach_vim = function(client)
-require'completion'.on_attach(client)
+    require'completion'.on_attach(client)
 end
+
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-vim.lsp.diagnostic.on_publish_diagnostics, {
--- Enable underline, use default values
-underline = true,
--- Enable virtual text, override spacing to 4
-virtual_text = {
-spacing = 4,
-prefix = '~',
-},
--- Use a function to dynamically turn signs off
--- and on, using buffer local variables
-signs = function(bufnr, client_id)
-local ok, result = pcall(vim.api.nvim_buf_get_var, bufnr, 'show_signs')
--- No buffer local variable set, so just enable by default
-if not ok then
-    return true
-end
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+        -- Enable underline, use default values
+        underline = true,
+        -- Enable virtual text, override spacing to 4
+        virtual_text = {
+        spacing = 4,
+        prefix = '~',
+        },
+        -- Use a function to dynamically turn signs off
+        -- and on, using buffer local variables
+        signs = function(bufnr, client_id)
+        local ok, result = pcall(vim.api.nvim_buf_get_var, bufnr, 'show_signs')
+        -- No buffer local variable set, so just enable by default
+        if not ok then
+            return true
+        end
 
-return result
-end,
--- Disable a feature
-update_in_insert = false,
-}
+        return result
+        end,
+        -- Disable a feature
+        update_in_insert = false,
+    }
 )
-require'lspconfig'.clangd.setup{on_attach=on_attach_vim}
+
+-- Clangd SETUP
+-- require'lspconfig'.clangd.setup{on_attach=on_attach_vim}
+
+-- CCLS SETUP
+require'lspconfig'.ccls.setup{
+    on_attach=on_attach_vim,
+    init_options = {
+       highlight = {
+            lsRanges = true;
+        }
+    }
+}
+ 
+-- JEDI (python)
+require'lspconfig'.jedi_language_server.setup{}
+
+-- MAPPING FOR lsp command (nice window with preview)
+vim.lsp.callbacks['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
+vim.lsp.callbacks['textDocument/references'] = require'lsputil.locations'.references_handler
+vim.lsp.callbacks['textDocument/definition'] = require'lsputil.locations'.definition_handler
+vim.lsp.callbacks['textDocument/declaration'] = require'lsputil.locations'.declaration_handler
+vim.lsp.callbacks['textDocument/typeDefinition'] = require'lsputil.locations'.typeDefinition_handler
+vim.lsp.callbacks['textDocument/implementation'] = require'lsputil.locations'.implementation_handler
+vim.lsp.callbacks['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
+vim.lsp.callbacks['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
+
 EOF
-
-
-
