@@ -1,5 +1,11 @@
 call plug#begin('~/.config/nvim/autoloadNew/plugged')
     Plug 'neovim/nvim-lsp'
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'anott03/nvim-lspinstall'
+    Plug 'prabirshrestha/vim-lsp'
+    Plug 'prabirshrestha/asyncomplete.vim'
+    Plug 'prabirshrestha/asyncomplete-lsp.vim'
+
     Plug 'nvim-lua/completion-nvim'
     Plug 'scrooloose/NERDTree'
     Plug 'preservim/nerdcommenter'
@@ -18,6 +24,8 @@ call plug#begin('~/.config/nvim/autoloadNew/plugged')
 
     Plug 'RishabhRD/popfix'
     Plug 'RishabhRD/nvim-lsputils'
+    Plug 'm-pilia/vim-ccls'
+
 call plug#end()
 
 set termguicolors
@@ -176,6 +184,21 @@ endfunction
 nnoremap <leader>ut :call ToggleUndoTree()<CR>
 nnoremap <leader>nt :call ToggleNerdTree()<CR>
 
+" Call hierarchy CCLS
+let g:yggdrasil_no_default_maps = 1
+let g:ccls_log_file = expand('~/Desktop/my_log_file.txt')
+
+let g:ccls_levels = 1 
+
+let g:ccls_size = 50
+let g:ccls_position = 'botright'
+let g:ccls_orientation = 'horizontal'
+
+let g:ccls_float_width = 50
+let g:ccls_float_height = 20
+
+nnoremap <silent> <buffer><leader>o    <Plug>(yggdrasil-toggle-node)
+
 
 " set rip grep root folder (if find file/direcotry [compile_commands.json/.git] treat it as root)
 let g:rg_root_types = ['compile_commands.json', '.git']
@@ -191,12 +214,12 @@ nnoremap <S-f> :RgAdv
 nnoremap <A-f> :Files<CR>
 nnoremap <A-b> :Buffers<CR>
 
-command! -bang -nargs=* RgAdvOld
+command! -bang -nargs=* RgAdv
             \ call fzf#vim#grep(
-            \   'rg --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')), 1,
+            \   'rg -g "!bt/**" --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')), 1,
             \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
 
-command! -bang -nargs=* RgAdv
+command! -bang -nargs=* RgAdvOld
             \ call fzf#vim#grep(
             \   'grep -rni -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')), 1,
             \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
@@ -274,6 +297,16 @@ endfunction
 nmap <leader>j :call GotoJump()<CR>
 
 
+" split current buffer vertically
+" nnoremap <C-s> :Vsb
+" command -nargs=1 Vsb call VerticalBufferSplit(<f-args>)
+
+" let current_buffer_nr = bufnr("%")
+nnoremap <C-s> :call VerticalBufferSplit(bufnr("%"))<CR> 
+
+function VerticalBufferSplit (arg1)
+  execute 'vert sb' a:arg1
+endfunction
 
 
 
@@ -297,7 +330,9 @@ nnoremap <silent> <leader>gr    <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap <silent> <leader>s    <cmd>lua vim.lsp.buf.document_symbol()<CR>
 nnoremap <silent> <leader>w    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
 
+nnoremap <silent> <leader>1    <cmd>lua vim.lsp.buf.incoming_calls()<CR>
 
+nnoremap <silent> <leader>2    <cmd>vim.lsp.buf.outgoing_calls()<CR>
 
 
 "inoremap <silent><TAB> <C-n>
