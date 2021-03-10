@@ -309,15 +309,31 @@ function VerticalBufferSplit (arg1)
 endfunction
 
 
-
-
-
-
-
 set completeopt-=preview
+set completeopt=menuone,noinsert,noselect
+let g:completition_matching_strategy_list = ['exact', 'substring', 'fuzzy']
+
+" Use <Tab> and <S-Tab> to navigate through popup menu
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+"inoremap <silent><TAB> <C-n>
+"inoremap <silent><S-TAB> <C-p>
+" First call omnicomp lsp second completition-nvim plugin
+" inoremap <silent><C-Space>      <cmd>lua vim.lsp.buf.completion()<CR>
+imap <silent> <C-Space> <Plug>(completion_trigger)
+
+" Set completeopt to have a better completion experience
+set completeopt=menuone,noinsert,noselect
+
+" Avoid showing message extra message when using completion
+set shortmess+=c
+
+" Use completion-nvim in every buffer
+autocmd BufEnter * lua require'completion'.on_attach()
 
 "use omni completion provided by lsp
-autocmd Filetype python setlocal omnifunc=v:lua.vim.lsp.omnifunc
+"TODO consider if for python instead of C/C++?
+" autocmd Filetype python setlocal omnifunc=v:lua.vim.lsp.omnifunc
 
 " some shortcuts
 nnoremap <silent> <leader>gs    <cmd>lua vim.lsp.buf.declaration()<CR>
@@ -335,17 +351,12 @@ nnoremap <silent> <leader>1    <cmd>lua vim.lsp.buf.incoming_calls()<CR>
 nnoremap <silent> <leader>2    <cmd>vim.lsp.buf.outgoing_calls()<CR>
 
 
-"inoremap <silent><TAB> <C-n>
-"inoremap <silent><S-TAB> <C-p>
-inoremap <silent><C-Space>      <cmd>lua vim.lsp.buf.completion()<CR>
 
 
 autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()
 autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
 autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
 
-set completeopt=menuone,noinsert,noselect
-let g:completition_matching_strategy_list = ['exact', 'substring', 'fuzzy']
 
 lua << EOF
 local on_attach_vim = function(client)
@@ -391,7 +402,7 @@ require'lspconfig'.ccls.setup{
 }
  
 -- JEDI (python)
-require'lspconfig'.jedi_language_server.setup{}
+require'lspconfig'.jedi_language_server.setup{on_attach=require'completion'.on_attach}
 
 -- MAPPING FOR lsp command (nice window with preview)
 vim.lsp.callbacks['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
