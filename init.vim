@@ -51,7 +51,7 @@ colorscheme gruvbox
 set background=dark
 set hidden
 set cmdheight=2
-set updatetime=100
+set updatetime=1000
 set shortmess+=c
 set number
 set clipboard=unnamedplus
@@ -88,7 +88,8 @@ set mouse=a
 
 " set colorcolumn=120 
 highlight darkgray ctermbg=darkgray
-highlight Normal ctermfg=gray
+highlight Normal ctermfg=blue
+"highlight Normal ctermfg=gray
 
 "Highlight line longer than colorcolumn size
 highlight ColorColumn ctermbg=NONE
@@ -351,16 +352,32 @@ nnoremap <silent> <leader>1    <cmd>lua vim.lsp.buf.incoming_calls()<CR>
 nnoremap <silent> <leader>2    <cmd>vim.lsp.buf.outgoing_calls()<CR>
 
 
+" highlight lspReference ctermfg=red guifg=red ctermbg=green guibg=green
+" autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()
+" autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
+" autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
 
-
-autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()
-autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
-autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-
+" highligh variables under cursor
+" :autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
+autocmd CursorHold * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
 
 lua << EOF
+local nvim_lsp = require('lspconfig')
+
 local on_attach_vim = function(client)
     require'completion'.on_attach(client)
+    if client.resolved_capabilities.document_highlight then
+        vim.api.nvim_exec([[
+        hi LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
+        hi LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
+        hi LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
+        augroup lsp_document_highlight
+            autocmd! * <buffer>
+            autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+            autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+        augroup END
+        ]], false)
+    end
 end
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
@@ -400,7 +417,6 @@ require'lspconfig'.ccls.setup{
         }
     }
 }
- 
 -- JEDI (python)
 require'lspconfig'.jedi_language_server.setup{on_attach=require'completion'.on_attach}
 
