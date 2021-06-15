@@ -104,6 +104,33 @@ let g:airline_powerline_fonts = 1
 let g:airline_solarized_bg='dark'
 let g:airline#extensions#tabline#show_buffers = 1
 
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
+" unicode symbols
+let g:airline_left_sep = '»'
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '«'
+let g:airline_right_sep = '◀'
+let g:airline_symbols.linenr = '␊'
+let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.paste = 'Þ'
+let g:airline_symbols.paste = '∥'
+let g:airline_symbols.whitespace = 'Ξ'
+
+" airline symbols
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
+
 
 "set NerdTree directory root to terminal one
 let g:NERDTreeChDirMode = 2
@@ -186,7 +213,8 @@ nnoremap <leader>ut :call ToggleUndoTree()<CR>
 nnoremap <leader>nt :call ToggleNerdTree()<CR>
 
 " Call hierarchy CCLS
-let g:yggdrasil_no_default_maps = 1
+" let g:yggdrasil_no_default_maps = 1
+" au FileType yggdrasil nmap <silent> <buffer> <S-z> <Plug>(yggdrasil-toggle-node)
 let g:ccls_log_file = expand('~/Desktop/my_log_file.txt')
 
 let g:ccls_levels = 1 
@@ -198,27 +226,47 @@ let g:ccls_orientation = 'horizontal'
 let g:ccls_float_width = 50
 let g:ccls_float_height = 20
 
-nnoremap <silent> <buffer><leader>o    <Plug>(yggdrasil-toggle-node)
+" nnoremap <silent> <buffer><leader>o <Plug>(yggdrasil-toggle-node)
 
 
 " set rip grep root folder (if find file/direcotry [compile_commands.json/.git] treat it as root)
 let g:rg_root_types = ['compile_commands.json', '.git']
 
 " FZF add preview window      
-let g:fzf_preview_window = 'right:60%' 
+let g:fzf_preview_window = 'right:60%:nowrap' 
+let  g:fzf_preview_window1 = {'options': ['--delimiter=:', '--with-nth=4']}
+"--delimiter \/ --with-nth -1' 
 let g:fzf_preview_use_dev_icons = 0
 
 let g:fzf_rg_color = 'fg:#ebdbb2,bg:#282828,hl:#fabd2f,fg+:#ebdbb2,bg+:#3c3836,hl+:#fabd2f,info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#665c54'
 " FZF mapping
 nnoremap <leader>f :BLines  
 nnoremap <S-f> :RgAdv 
+nnoremap <C-f> :RgAdvAll 
+
 nnoremap <A-f> :Files<CR>
 nnoremap <A-b> :Buffers<CR>
 
+
+" TODO: Implement a program that shortens the path in each line
+let transformer = "| awk -F: 'BEGIN { OFS = FS } {$3 = $3 \":shortened-path:\" $2 \":\" $3; print}'"
+
+command! -bang -nargs=* RgAdvAll1
+  \ call fzf#vim#grep(
+  \   "rg --column --line-number --no-heading --color=always --smart-case "..shellescape(<q-args>)..transformer,
+  \   1,
+  \   { 'options': '--delimiter=: --with-nth=4..' },
+  \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
+
 command! -bang -nargs=* RgAdv
             \ call fzf#vim#grep(
-            \   'rg -g "!bt/**" --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')), 1,
+            \   'rg -g "!bt/**" -g "!Test/**" --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')), 1,
             \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
+
+command! -bang -nargs=* RgAdvAll
+            \ call fzf#vim#grep(
+            \   'rg -g "!bt/**" -g "!Test/**" --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')).' ${P4FS}/${P4CLIENT}'..transformer, 1,
+            \   fzf#vim#with_preview(g:fzf_preview_window1), <bang>0)
 
 command! -bang -nargs=* RgAdvOld
             \ call fzf#vim#grep(
@@ -278,7 +326,7 @@ xnoremap <S-Tab> <gv
 
 " highligh variables under cursor
 ":autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
-
+" nnoremap <C-h> :RgAdvAll - uzyc jako podkreslenie 
 
 " show jump list and select which one to go to
 function! GotoJump()
@@ -359,7 +407,7 @@ nnoremap <silent> <leader>2    <cmd>vim.lsp.buf.outgoing_calls()<CR>
 
 " highligh variables under cursor
 " :autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
-autocmd CursorHold * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
+"autocmd CursorHold * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
 
 lua << EOF
 local nvim_lsp = require('lspconfig')
