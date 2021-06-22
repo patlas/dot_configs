@@ -2,9 +2,10 @@ call plug#begin('~/.config/nvim/autoloadNew/plugged')
     Plug 'neovim/nvim-lsp'
     Plug 'neovim/nvim-lspconfig'
     Plug 'anott03/nvim-lspinstall'
-    Plug 'prabirshrestha/vim-lsp'
-    Plug 'prabirshrestha/asyncomplete.vim'
-    Plug 'prabirshrestha/asyncomplete-lsp.vim'
+    Plug 'hrsh7th/nvim-compe'
+"    Plug 'prabirshrestha/vim-lsp'
+"    Plug 'prabirshrestha/asyncomplete.vim'
+"    Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
     Plug 'nvim-lua/completion-nvim'
     Plug 'scrooloose/NERDTree'
@@ -25,6 +26,7 @@ call plug#begin('~/.config/nvim/autoloadNew/plugged')
     Plug 'RishabhRD/popfix'
     Plug 'RishabhRD/nvim-lsputils'
     Plug 'm-pilia/vim-ccls'
+    Plug 'folke/lsp-colors.nvim'
 
 call plug#end()
 
@@ -234,8 +236,7 @@ let g:rg_root_types = ['compile_commands.json', '.git']
 
 " FZF add preview window      
 let g:fzf_preview_window = 'right:60%:nowrap' 
-let  g:fzf_preview_window1 = {'options': ['--delimiter=:', '--with-nth=4']}
-"--delimiter \/ --with-nth -1' 
+let  g:fzf_preview_window1 = {'options': ['--delimiter=:', '--with-nth=5']}
 let g:fzf_preview_use_dev_icons = 0
 
 let g:fzf_rg_color = 'fg:#ebdbb2,bg:#282828,hl:#fabd2f,fg+:#ebdbb2,bg+:#3c3836,hl+:#fabd2f,info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#665c54'
@@ -249,7 +250,7 @@ nnoremap <A-b> :Buffers<CR>
 
 
 " TODO: Implement a program that shortens the path in each line
-let transformer = "| awk -F: 'BEGIN { OFS = FS } {$3 = $3 \":shortened-path:\" $2 \":\" $3; print}'"
+let transformer = "| awk -F: 'BEGIN { OFS = FS } {$3 = $3 \":\" $2; print}'"
 
 command! -bang -nargs=* RgAdvAll1
   \ call fzf#vim#grep(
@@ -409,6 +410,9 @@ nnoremap <silent> <leader>2    <cmd>vim.lsp.buf.outgoing_calls()<CR>
 " :autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
 "autocmd CursorHold * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
 
+nnoremap <silent> <leader>hh <cmd> exe printf('match IncSearch /\<%s\>/', expand('<cword>'))<CR>
+nnoremap <silent> <leader>he <cmd> exe printf('match IncSearch asdfasdf')<CR>
+
 lua << EOF
 local nvim_lsp = require('lspconfig')
 
@@ -419,14 +423,41 @@ local on_attach_vim = function(client)
         hi LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
         hi LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
         hi LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
-        augroup lsp_document_highlight
-            autocmd! * <buffer>
-            autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-            autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-        augroup END
+        " augroup lsp_document_highlight
+        "     autocmd! * <buffer>
+        "     autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+        "     autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+        " augroup END
         ]], false)
     end
 end
+
+-- Compe setup
+require'compe'.setup {
+  enabled = true;
+  autocomplete = true;
+  debug = false;
+  min_length = 1;
+  preselect = 'enable';
+  throttle_time = 80;
+  source_timeout = 200;
+  resolve_timeout = 800;
+  incomplete_delay = 400;
+  max_abbr_width = 100;
+  max_kind_width = 100;
+  max_menu_width = 100;
+  documentation = true;
+
+  source = {
+    path = true;
+    buffer = true;
+    calc = true;
+    nvim_lsp = true;
+    nvim_lua = true;
+    vsnip = true;
+    ultisnips = true;
+  };
+}
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -465,8 +496,18 @@ require'lspconfig'.ccls.setup{
         }
     }
 }
+
 -- JEDI (python)
 require'lspconfig'.jedi_language_server.setup{on_attach=require'completion'.on_attach}
+
+
+-- LSP coloring
+require("lsp-colors").setup({
+  Error = "#db4b4b",
+  Warning = "#e0af68",
+  Information = "#0db9d7",
+  Hint = "#10B981"
+})
 
 -- MAPPING FOR lsp command (nice window with preview)
 vim.lsp.callbacks['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
