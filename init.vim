@@ -27,6 +27,7 @@ call plug#begin('~/.config/nvim/autoloadNew/plugged')
     Plug 'RishabhRD/nvim-lsputils'
     Plug 'm-pilia/vim-ccls'
     Plug 'folke/lsp-colors.nvim'
+    Plug 'puremourning/vimspector'
 
 call plug#end()
 
@@ -227,6 +228,9 @@ let g:ccls_orientation = 'horizontal'
 
 let g:ccls_float_width = 50
 let g:ccls_float_height = 20
+
+" VimSpector
+let g:vimspector_enable_mappings = 'HUMAN'
 
 " nnoremap <silent> <buffer><leader>o <Plug>(yggdrasil-toggle-node)
 
@@ -499,6 +503,9 @@ require'lspconfig'.ccls.setup{
 
 -- JEDI (python)
 require'lspconfig'.jedi_language_server.setup{on_attach=require'completion'.on_attach}
+
+-- TSServer (nodejs)
+require'lspconfig'.tsserver.setup{}
 
 
 -- LSP coloring
