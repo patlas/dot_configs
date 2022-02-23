@@ -105,33 +105,37 @@ let g:airline_theme='tomorrow'
 let g:airline_powerline_fonts = 1
 let g:airline_solarized_bg='dark'
 let g:airline#extensions#tabline#show_buffers = 1
+let g:airline_section_z='%3p%% ☰ %l/%L:%v'
 
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
 
 " unicode symbols
-let g:airline_left_sep = '»'
+" let g:airline_left_sep = '»'
 let g:airline_left_sep = '▶'
-let g:airline_right_sep = '«'
+" let g:airline_right_sep = '«'
 let g:airline_right_sep = '◀'
-let g:airline_symbols.linenr = '␊'
-let g:airline_symbols.linenr = '␤'
-let g:airline_symbols.linenr = '¶'
+" let g:airline_symbols.linenr = '␊'
+" let g:airline_symbols.linenr = '␤'
+" let g:airline_symbols.linenr = ''
+let g:airline_symbols.linenr = '☰'
+" let g:airline_symbols.linenr = '¶'
 let g:airline_symbols.branch = '⎇'
-let g:airline_symbols.paste = 'ρ'
-let g:airline_symbols.paste = 'Þ'
+" let g:airline_symbols.paste = 'ρ'
+" let g:airline_symbols.paste = 'Þ'
 let g:airline_symbols.paste = '∥'
 let g:airline_symbols.whitespace = 'Ξ'
+" let g:airline_symbols.readonly = ''
 
 " airline symbols
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-let g:airline_symbols.branch = ''
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.linenr = ''
+" let g:airline_left_sep = ''
+" let g:airline_left_alt_sep = ''
+" let g:airline_right_sep = ''
+" let g:airline_right_alt_sep = ''
+" let g:airline_symbols.branch = ''
+" let g:airline_symbols.readonly = ''
+" let g:airline_symbols.linenr = ''
 
 
 "set NerdTree directory root to terminal one
@@ -216,19 +220,19 @@ nnoremap <leader>nt :call ToggleNerdTree()<CR>
 
 " Call hierarchy CCLS
 " let g:yggdrasil_no_default_maps = 1
-" au FileType yggdrasil nmap <silent> <buffer> <S-z> <Plug>(yggdrasil-toggle-node)
-let g:ccls_log_file = expand('~/Desktop/my_log_file.txt')
-
-let g:ccls_levels = 1 
-
-let g:ccls_size = 50
-let g:ccls_position = 'botright'
-let g:ccls_orientation = 'horizontal'
-
-let g:ccls_float_width = 50
-let g:ccls_float_height = 20
-
-" nnoremap <silent> <buffer><leader>o <Plug>(yggdrasil-toggle-node)
+" au FileType yggdrasil nmap <silent> <buffer> <C-k> <Plug>(yggdrasil-toggle-node)
+" let g:ccls_log_file = expand('~/Desktop/my_log_file.txt')
+"
+" let g:ccls_levels = 5
+"
+" let g:ccls_size = 50
+" let g:ccls_position = 'botright'
+" let g:ccls_orientation = 'horizontal'
+"
+" let g:ccls_float_width = 50
+" let g:ccls_float_height = 20
+"
+" nnoremap <silent> <buffer><C-k> <Plug>(yggdrasil-toggle-node)
 
 
 " set rip grep root folder (if find file/direcotry [compile_commands.json/.git] treat it as root)
