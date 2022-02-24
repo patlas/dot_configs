@@ -1,3 +1,7 @@
+"sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+"       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
+
 call plug#begin('~/.config/nvim/autoloadNew/plugged')
     Plug 'neovim/nvim-lsp'
     Plug 'neovim/nvim-lspconfig'
@@ -502,8 +506,17 @@ require'lspconfig'.ccls.setup{
 }
 
 -- JEDI (python)
-require'lspconfig'.jedi_language_server.setup{on_attach=require'completion'.on_attach}
-
+--require'lspconfig'.jedi_language_server.setup{on_attach=require'completion'.on_attach}
+--vim.lsp.set_log_level("debug")
+require'lspconfig'.jedi_language_server.setup{
+    on_attach=require'completion'.on_attach,
+    cmd = { 'jedi-language-server'},
+    filetypes = { 'python' },
+    root_dir = function(fname)
+        return vim.fn.getcwd()
+    end,
+   single_file_support = false,
+}
 
 -- LSP coloring
 require("lsp-colors").setup({
