@@ -54,6 +54,7 @@ colorscheme gruvbox
 " manualy recompile one
 " let g:coc_node_path = "/home/p.las2/TOOLS/node-v10.12.0/out/Release/node"
 
+"set nocompatible
 set background=dark
 set hidden
 set cmdheight=2
@@ -173,8 +174,8 @@ nnoremap <leader>uf :UndotreeFocus<CR>
 
 
 " Remaps for NerdCommenter
-nnoremap <leader>c :call NERDComment(0,"toggle")<CR> 
-vnoremap <leader>c :call NERDComment(0,"toggle")<CR>
+nnoremap <leader>c :call nerdcommenter#Comment('n',"toggle")<CR> 
+vnoremap <leader>c :call nerdcommenter#Comment('x',"toggle")<CR>
 
 let g:undoTree_enabled = 0
 let g:nerdTree_enabled = 0
@@ -223,12 +224,12 @@ nnoremap <leader>ut :call ToggleUndoTree()<CR>
 nnoremap <leader>nt :call ToggleNerdTree()<CR>
 
 " Call hierarchy CCLS
+" let g:ccls_log_file = expand('~/CclsLogs.txt')
 " let g:yggdrasil_no_default_maps = 1
 " au FileType yggdrasil nmap <silent> <buffer> <C-k> <Plug>(yggdrasil-toggle-node)
-" let g:ccls_log_file = expand('~/Desktop/my_log_file.txt')
-"
-" let g:ccls_levels = 5
-"
+"let g:ccls_log_file = expand('~/Desktop/my_log_file.txt')
+let g:ccls_levels = 5
+
 " let g:ccls_size = 50
 " let g:ccls_position = 'botright'
 " let g:ccls_orientation = 'horizontal'
@@ -292,6 +293,10 @@ nnoremap <leader>q :bw <CR>
 " Make <leader>+m to go to matchin pairs
 nnoremap <leader>m <S-%>
 vnoremap <leader>m <S-%>
+
+" TODO Find in matchin braces block
+" nnoremap <leader>o <ESC>vi{<ESC>/\%V<q-args>
+" command! -bang -nargs=1 findIn <ESC>vi{<ESC>/\%V<args>
 
 " Map yank (copy) command to copy data into vim and clipboard buffer
 set clipboard+=unnamedplus
@@ -420,6 +425,21 @@ nnoremap <silent> <leader>2    <cmd>vim.lsp.buf.outgoing_calls()<CR>
 
 nnoremap <silent> <leader>hh <cmd> exe printf('match IncSearch /\<%s\>/', expand('<cword>'))<CR>
 nnoremap <silent> <leader>he <cmd> exe printf('match IncSearch asdfasdf')<CR>
+
+if has('wsl')
+    let g:clipboard = {
+          \   'name': 'wslclipboard',
+          \   'copy': {
+          \      '+': 'win32yank.exe -i --crlf',
+          \      '*': 'win32yank.exe -i --crlf',
+          \    },
+          \   'paste': {
+          \      '+': 'win32yank.exe -o --lf',
+          \      '*': 'win32yank.exe -o --lf',
+          \   },
+          \   'cache_enabled': 1,
+          \ }
+endif
 
 lua << EOF
 local nvim_lsp = require('lspconfig')
