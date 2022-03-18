@@ -3,34 +3,34 @@
 
 
 call plug#begin('~/.config/nvim/autoloadNew/plugged')
-    Plug 'neovim/nvim-lsp'
-    Plug 'neovim/nvim-lspconfig'
-    Plug 'anott03/nvim-lspinstall'
-    Plug 'hrsh7th/nvim-compe'
+Plug 'neovim/nvim-lsp'
+Plug 'neovim/nvim-lspconfig'
+Plug 'anott03/nvim-lspinstall'
+Plug 'hrsh7th/nvim-compe'
 "    Plug 'prabirshrestha/vim-lsp'
 "    Plug 'prabirshrestha/asyncomplete.vim'
 "    Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
-    Plug 'nvim-lua/completion-nvim'
-    Plug 'scrooloose/NERDTree'
-    Plug 'preservim/nerdcommenter'
-    Plug 'jiangmiao/auto-pairs'
-    Plug 'iCyMind/NeoSolarized'
-    Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
-    Plug 'jremmen/vim-ripgrep'
-    Plug 'mbbill/undotree'
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    Plug 'junegunn/fzf.vim'
-    Plug 'christoomey/vim-tmux-navigator'
-    Plug 'morhetz/gruvbox'
-    Plug 'jaxbot/semantic-highlight.vim'
-    Plug 'jackguo380/vim-lsp-cxx-highlight'
+Plug 'nvim-lua/completion-nvim'
+Plug 'scrooloose/NERDTree'
+Plug 'preservim/nerdcommenter'
+Plug 'jiangmiao/auto-pairs'
+Plug 'iCyMind/NeoSolarized'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'jremmen/vim-ripgrep'
+Plug 'mbbill/undotree'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'morhetz/gruvbox'
+Plug 'jaxbot/semantic-highlight.vim'
+Plug 'jackguo380/vim-lsp-cxx-highlight'
 
-    Plug 'RishabhRD/popfix'
-    Plug 'RishabhRD/nvim-lsputils'
-    Plug 'm-pilia/vim-ccls'
-    Plug 'folke/lsp-colors.nvim'
+Plug 'RishabhRD/popfix'
+Plug 'RishabhRD/nvim-lsputils'
+Plug 'm-pilia/vim-ccls'
+Plug 'folke/lsp-colors.nvim'
 
 call plug#end()
 
@@ -182,10 +182,10 @@ let g:nerdTree_enabled = 0
 " if NERDTree opened and call 
 function! ShowUndoTree()
     if exists("g:NERDTree") && g:NERDTree.IsOpen()
-       execute ':NERDTreeToggle'
-       let g:nerdTree_enabled = 1
+        execute ':NERDTreeToggle'
+        let g:nerdTree_enabled = 1
     endif
-    
+
     execute ':UndotreeShow'
     let g:undoTree_enabled = 1
 endfunction
@@ -262,17 +262,20 @@ nnoremap <A-b> :Buffers<CR>
 let transformer = "| awk -F: 'BEGIN { OFS = FS } {$3 = $3 \":\" $2; print}'"
 
 command! -bang -nargs=* RgAdvAll1
-  \ call fzf#vim#grep(
-  \   "rg --column --line-number --no-heading --color=always --smart-case "..shellescape(<q-args>)..transformer,
-  \   1,
-  \   { 'options': '--delimiter=: --with-nth=4..' },
-  \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
+            \ call fzf#vim#grep(
+            \   "rg --column --line-number --no-heading --color=always --smart-case "..shellescape(<q-args>)..transformer,
+            \   1,
+            \   { 'options': '--delimiter=: --with-nth=4..' },
+            \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
 
 command! -bang -nargs=* RgAdv
             \ call fzf#vim#grep(
             \   'rg -g "!bt/**" -g "!Test/**" --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')), 1,
             \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
 
+" TODO -> fix path to use some project WS variable -> currently hardcoded P4FS
+" but in custom project it cause problem
+" TODO -> implement WS that link compile commands etc
 command! -bang -nargs=* RgAdvAll
             \ call fzf#vim#grep(
             \   'rg -g "!bt/**" -g "!Test/**" --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')).' ${P4FS}/${P4CLIENT}'..transformer, 1,
@@ -289,6 +292,7 @@ nnoremap <S-Tab> :bp <CR>
 nnoremap <C-b> :b# <CR>
 " leader+q close current buffer
 nnoremap <leader>q :bw <CR>
+" nnoremap <leader>q :q <CR>
 
 " Make <leader>+m to go to matchin pairs
 nnoremap <leader>m <S-%>
@@ -324,7 +328,7 @@ inoremap <silent> <C-p> <ESC>pa
 nnoremap <silent> <C-p> :pu<CR>
 
 " Open horizontal bottom terminal
-nnoremap <silent> <leader>t :belowright split term://bash<CR>i
+nnoremap <silent> <leader>t :let @+ = expand('%:p')<CR>:belowright split term://bash<CR>i
 " Open terminal in current file directory
 nnoremap <silent> <S-t> :belowright split term://bash -c 'cd %:p:h; exec bash'<CR>i
 " set ctrl+'.' to increase split window size by 10
@@ -344,17 +348,17 @@ xnoremap <S-Tab> <gv
 
 " show jump list and select which one to go to
 function! GotoJump()
-  jumps
-  let j = input("Please select your jump: ")
-  if j != ''
-    let pattern = '\v\c^\+'
-    if j =~ pattern
-      let j = substitute(j, pattern, '', 'g')
-      execute "normal " . j . "\<c-i>"
-    else
-      execute "normal " . j . "\<c-o>"
+    jumps
+    let j = input("Please select your jump: ")
+    if j != ''
+        let pattern = '\v\c^\+'
+        if j =~ pattern
+            let j = substitute(j, pattern, '', 'g')
+            execute "normal " . j . "\<c-i>"
+        else
+            execute "normal " . j . "\<c-o>"
+        endif
     endif
-  endif
 endfunction
 
 nmap <leader>j :call GotoJump()<CR>
@@ -368,7 +372,7 @@ nmap <leader>j :call GotoJump()<CR>
 nnoremap <C-s> :call VerticalBufferSplit(bufnr("%"))<CR> 
 
 function VerticalBufferSplit (arg1)
-  execute 'vert sb' a:arg1
+    execute 'vert sb' a:arg1
 endfunction
 
 
@@ -428,55 +432,55 @@ nnoremap <silent> <leader>he <cmd> exe printf('match IncSearch asdfasdf')<CR>
 
 if has('wsl')
     let g:clipboard = {
-          \   'name': 'wslclipboard',
-          \   'copy': {
-          \      '+': 'win32yank.exe -i --crlf',
-          \      '*': 'win32yank.exe -i --crlf',
-          \    },
-          \   'paste': {
-          \      '+': 'win32yank.exe -o --lf',
-          \      '*': 'win32yank.exe -o --lf',
-          \   },
-          \   'cache_enabled': 1,
-          \ }
+                \   'name': 'wslclipboard',
+                \   'copy': {
+                    \      '+': 'win32yank.exe -i --crlf',
+                    \      '*': 'win32yank.exe -i --crlf',
+                    \    },
+                    \   'paste': {
+                        \      '+': 'win32yank.exe -o --lf',
+                        \      '*': 'win32yank.exe -o --lf',
+                        \   },
+                        \   'cache_enabled': 1,
+                        \ }
 endif
 
 lua << EOF
 local nvim_lsp = require('lspconfig')
 
 local on_attach_vim = function(client)
-    require'completion'.on_attach(client)
-    if client.resolved_capabilities.document_highlight then
-        vim.api.nvim_exec([[
-        hi LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
-        hi LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
-        hi LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
-        " augroup lsp_document_highlight
-        "     autocmd! * <buffer>
-        "     autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-        "     autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-        " augroup END
-        ]], false)
+require'completion'.on_attach(client)
+if client.resolved_capabilities.document_highlight then
+    vim.api.nvim_exec([[
+    hi LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
+    hi LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
+    hi LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
+    " augroup lsp_document_highlight
+    "     autocmd! * <buffer>
+    "     autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+    "     autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+    " augroup END
+    ]], false)
     end
 end
 
 -- Compe setup
 require'compe'.setup {
-  enabled = true;
-  autocomplete = true;
-  debug = false;
-  min_length = 1;
-  preselect = 'enable';
-  throttle_time = 80;
-  source_timeout = 200;
-  resolve_timeout = 800;
-  incomplete_delay = 400;
-  max_abbr_width = 100;
-  max_kind_width = 100;
-  max_menu_width = 100;
-  documentation = true;
+enabled = true;
+autocomplete = true;
+debug = false;
+min_length = 1;
+preselect = 'enable';
+throttle_time = 80;
+source_timeout = 200;
+resolve_timeout = 800;
+incomplete_delay = 400;
+max_abbr_width = 100;
+max_kind_width = 100;
+max_menu_width = 100;
+documentation = true;
 
-  source = {
+source = {
     path = true;
     buffer = true;
     calc = true;
@@ -484,32 +488,32 @@ require'compe'.setup {
     nvim_lua = true;
     vsnip = true;
     ultisnips = true;
-  };
+    };
 }
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-        -- Enable underline, use default values
-        underline = true,
-        -- Enable virtual text, override spacing to 4
-        virtual_text = {
+vim.lsp.diagnostic.on_publish_diagnostics, {
+    -- Enable underline, use default values
+    underline = true,
+    -- Enable virtual text, override spacing to 4
+    virtual_text = {
         spacing = 4,
         prefix = '~',
         },
-        -- Use a function to dynamically turn signs off
-        -- and on, using buffer local variables
-        signs = function(bufnr, client_id)
-        local ok, result = pcall(vim.api.nvim_buf_get_var, bufnr, 'show_signs')
-        -- No buffer local variable set, so just enable by default
-        if not ok then
-            return true
-        end
+    -- Use a function to dynamically turn signs off
+    -- and on, using buffer local variables
+    signs = function(bufnr, client_id)
+    local ok, result = pcall(vim.api.nvim_buf_get_var, bufnr, 'show_signs')
+    -- No buffer local variable set, so just enable by default
+    if not ok then
+        return true
+    end
 
-        return result
-        end,
-        -- Disable a feature
-        update_in_insert = false,
-    }
+    return result
+end,
+-- Disable a feature
+update_in_insert = false,
+}
 )
 
 -- Clangd SETUP
@@ -517,10 +521,10 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 
 -- CCLS SETUP
 require'lspconfig'.ccls.setup{
-    on_attach=on_attach_vim,
-    init_options = {
-       highlight = {
-            lsRanges = true;
+on_attach=on_attach_vim,
+init_options = {
+    highlight = {
+        lsRanges = true;
         }
     }
 }
@@ -529,21 +533,21 @@ require'lspconfig'.ccls.setup{
 --require'lspconfig'.jedi_language_server.setup{on_attach=require'completion'.on_attach}
 --vim.lsp.set_log_level("debug")
 require'lspconfig'.jedi_language_server.setup{
-    on_attach=require'completion'.on_attach,
-    cmd = { 'jedi-language-server'},
-    filetypes = { 'python' },
-    root_dir = function(fname)
-        return vim.fn.getcwd()
+on_attach=require'completion'.on_attach,
+cmd = { 'jedi-language-server'},
+filetypes = { 'python' },
+root_dir = function(fname)
+return vim.fn.getcwd()
     end,
-   single_file_support = false,
-}
+    single_file_support = false,
+    }
 
 -- LSP coloring
 require("lsp-colors").setup({
-  Error = "#db4b4b",
-  Warning = "#e0af68",
-  Information = "#0db9d7",
-  Hint = "#10B981"
+Error = "#db4b4b",
+Warning = "#e0af68",
+Information = "#0db9d7",
+Hint = "#10B981"
 })
 
 -- MAPPING FOR lsp command (nice window with preview)
