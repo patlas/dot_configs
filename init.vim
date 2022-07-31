@@ -166,8 +166,9 @@ nnoremap <leader>uf :UndotreeFocus<CR>
 
 
 " Remaps for NerdCommenter
-nnoremap <leader>c :call NERDComment(0,"toggle")<CR> 
-vnoremap <leader>c :call NERDComment(0,"toggle")<CR>
+nnoremap <leader>c :call nerdcommenter#Comment('n', 'Toggle')<CR>
+vnoremap <leader>c :call nerdcommenter#Comment('x', 'Toggle')<CR>
+
 
 let g:undoTree_enabled = 0
 let g:nerdTree_enabled = 0
@@ -246,7 +247,7 @@ let g:fzf_preview_use_dev_icons = 0
 let g:fzf_rg_color = 'fg:#ebdbb2,bg:#282828,hl:#fabd2f,fg+:#ebdbb2,bg+:#3c3836,hl+:#fabd2f,info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#665c54'
 " FZF mapping
 nnoremap <leader>f :BLines  
-nnoremap <S-f> :RgAdv 
+nnoremap <S-f> :RgProj 
 nnoremap <C-f> :RgAdvAll 
 
 nnoremap <A-f> :Files<CR>
@@ -277,6 +278,19 @@ command! -bang -nargs=* RgAdvOld
             \ call fzf#vim#grep(
             \   'grep -rni -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')), 1,
             \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
+
+
+command! -bang -nargs=* RgProjOLD
+            \ call fzf#vim#grep(
+            \   'rg --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')).' '.(len($POJECTWORKSPACE)>0?$PROJECTWORKSPACE:'.'), 1,
+            \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
+
+
+command! -bang -nargs=* RgProj
+            \ call fzf#vim#grep(
+            \   'rg --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')).' '.(get(g:, "projectworkspace", ".")), 1,
+            \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
+
 " vim swithing buffers using Tab
 nnoremap <Tab> :bn <CR> 
 nnoremap <S-Tab> :bp <CR> 
@@ -416,6 +430,13 @@ nnoremap <silent> <leader>2    <cmd>vim.lsp.buf.outgoing_calls()<CR>
 
 nnoremap <silent> <leader>hh <cmd> exe printf('match IncSearch /\<%s\>/', expand('<cword>'))<CR>
 nnoremap <silent> <leader>he <cmd> exe printf('match IncSearch asdfasdf')<CR>
+
+
+" source workspace config if exists
+:if !empty(glob(".vimws"))
+:   source .vimws
+:endif
+
 
 lua << EOF
 local nvim_lsp = require('lspconfig')
