@@ -453,6 +453,11 @@ nnoremap <silent> <leader>he <cmd> exe printf('match IncSearch asdfasdf')<CR>
 :   source .vimws
 :endif
 
+" open project startup file if set and other file not requested
+:if @% == ""
+:execute 'edit' g:startupfile
+:endif
+
 if has('wsl')
     let g:clipboard = {
                 \   'name': 'wslclipboard',
