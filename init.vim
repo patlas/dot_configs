@@ -5,13 +5,26 @@
 call plug#begin('~/.config/nvim/autoloadNew/plugged')
 Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
-Plug 'anott03/nvim-lspinstall'
-Plug 'hrsh7th/nvim-compe'
+" Plug 'anott03/nvim-lspinstall'
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
+
+" Autocomplete
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
+
+" For vsnip users.
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
+" Plug 'p00f/clangd_extensions.nvim'
 "    Plug 'prabirshrestha/vim-lsp'
 "    Plug 'prabirshrestha/asyncomplete.vim'
 "    Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
-    Plug 'nvim-lua/completion-nvim'
+    " Plug 'nvim-lua/completion-nvim'
     Plug 'scrooloose/NERDTree'
     Plug 'preservim/nerdcommenter'
     Plug 'jiangmiao/auto-pairs'
@@ -31,7 +44,7 @@ Plug 'hrsh7th/nvim-compe'
     Plug 'RishabhRD/nvim-lsputils'
     Plug 'm-pilia/vim-ccls'
     Plug 'folke/lsp-colors.nvim'
-    Plug 'puremourning/vimspector'
+    " Plug 'puremourning/vimspector' <--- uncomment if debugger required
 
 call plug#end()
 
@@ -249,14 +262,15 @@ let g:rg_root_types = ['compile_commands.json', '.git']
 
 " FZF add preview window      
 let g:fzf_preview_window = 'right:60%:nowrap' 
-let  g:fzf_preview_window1 = {'options': ['--delimiter=:', '--with-nth=5']}
+let  g:fzf_preview_window_new = {'options': ['--delimiter=/', '--with-nth=3']} 
+let  g:fzf_preview_window1 = {'options': ['--delimiter=:', '--with-nth=5']} 
 let g:fzf_preview_use_dev_icons = 0
 
 let g:fzf_rg_color = 'fg:#ebdbb2,bg:#282828,hl:#fabd2f,fg+:#ebdbb2,bg+:#3c3836,hl+:#fabd2f,info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#665c54'
 " FZF mapping
 nnoremap <leader>f :BLines  
 nnoremap <S-f> :RgProj 
-nnoremap <C-f> :RgAdvAll 
+nnoremap <C-f> :RgProjAdv 
 
 nnoremap <A-f> :Files<CR>
 nnoremap <A-b> :Buffers<CR>
@@ -297,9 +311,25 @@ command! -bang -nargs=* RgProjOLD
             \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
 
 
+
+function! PrepareSkipRg()
+    let retString = ''
+    for item in split(get(g:,"skip",""))
+        " retString = retString.' -g "!'.item.'"'
+        let retString = retString.' -g "!'.item.'"'
+    endfor
+
+    return retString
+endfunction
+
 command! -bang -nargs=* RgProj
             \ call fzf#vim#grep(
-            \   'rg --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')).' '.(get(g:, "projectworkspace", ".")), 1,
+            \   'rg --glob-case-insensitive '.(PrepareSkipRg()).' --line-number -H --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')).' '.(get(g:, "vccbws", ".")), 1,
+            \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
+
+command! -bang -nargs=* RgProjAdv
+            \ call fzf#vim#grep(
+            \   'rg --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')).' '.(get(g:, "pws", ".")), 1,
             \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
 
 " vim swithing buffers using Tab
@@ -392,28 +422,21 @@ function VerticalBufferSplit (arg1)
     execute 'vert sb' a:arg1
 endfunction
 
+" Use <Tab> and <S-Tab> to navigate through popup menu
+" inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" imap <silent> <C-Space> <Plug>(completion_trigger)
 
+" Set completeopt to have a better completion experience
 set completeopt-=preview
 set completeopt=menuone,noinsert,noselect
 let g:completition_matching_strategy_list = ['exact', 'substring', 'fuzzy']
-
-" Use <Tab> and <S-Tab> to navigate through popup menu
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-"inoremap <silent><TAB> <C-n>
-"inoremap <silent><S-TAB> <C-p>
-" First call omnicomp lsp second completition-nvim plugin
-" inoremap <silent><C-Space>      <cmd>lua vim.lsp.buf.completion()<CR>
-imap <silent> <C-Space> <Plug>(completion_trigger)
-
-" Set completeopt to have a better completion experience
-set completeopt=menuone,noinsert,noselect
 
 " Avoid showing message extra message when using completion
 set shortmess+=c
 
 " Use completion-nvim in every buffer
-autocmd BufEnter * lua require'completion'.on_attach()
+" autocmd BufEnter * lua require'completion'.on_attach()
 
 "use omni completion provided by lsp
 "TODO consider if for python instead of C/C++?
@@ -474,50 +497,91 @@ if has('wsl')
 endif
 
 lua << EOF
-local nvim_lsp = require('lspconfig')
+-- Set up nvim-cmp.
+  local cmp = require'cmp'
 
-local on_attach_vim = function(client)
-require'completion'.on_attach(client)
-if client.resolved_capabilities.document_highlight then
-    vim.api.nvim_exec([[
-    hi LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
-    hi LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
-    hi LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
-    " augroup lsp_document_highlight
-    "     autocmd! * <buffer>
-    "     autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-    "     autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-    " augroup END
-    ]], false)
-    end
-end
+  cmp.setup({
+    snippet = {
+      -- REQUIRED - you must specify a snippet engine
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+      end,
+    },
+    window = {
+      -- completion = cmp.config.window.bordered(),
+      -- documentation = cmp.config.window.bordered(),
+    },
+    mapping = cmp.mapping.preset.insert({
+    ["<Tab>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_next_item()
+          elseif vim.fn["vsnip#available"](1) == 1 then
+            feedkey("<Plug>(vsnip-expand-or-jump)", "")
+          elseif has_words_before() then
+            cmp.complete()
+          else
+            fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
+          end
+        end, { "i", "s" }),
 
--- Compe setup
-require'compe'.setup {
-enabled = true;
-autocomplete = true;
-debug = false;
-min_length = 1;
-preselect = 'enable';
-throttle_time = 80;
-source_timeout = 200;
-resolve_timeout = 800;
-incomplete_delay = 400;
-max_abbr_width = 100;
-max_kind_width = 100;
-max_menu_width = 100;
-documentation = true;
+    ["<S-Tab>"] = cmp.mapping(function()
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+        feedkey("<Plug>(vsnip-jump-prev)", "")
+      end
+   end, { "i", "s" }),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    }),
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'vsnip' }, -- For vsnip users.
+    }, {
+      { name = 'buffer' },
+    })
+  })
 
-source = {
-    path = true;
-    buffer = true;
-    calc = true;
-    nvim_lsp = true;
-    nvim_lua = true;
-    vsnip = true;
-    ultisnips = true;
-    };
-}
+  -- Set configuration for specific filetype.
+  cmp.setup.filetype('gitcommit', {
+    sources = cmp.config.sources({
+      { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline({ '/', '?' }, {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
+
+
+  require("mason").setup()
+  require("mason-lspconfig").setup{
+  ensure_installed = { "ccls" },
+  }
+
+-- Set up lspconfig. jedi_language_server, ccls
+-- local capabilities = require('cmp_nvim_lsp').default_capabilities()
+-- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+-- require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
+ 
+
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -527,7 +591,7 @@ vim.lsp.diagnostic.on_publish_diagnostics, {
     virtual_text = {
         spacing = 4,
         prefix = '~',
-        },
+    },
     -- Use a function to dynamically turn signs off
     -- and on, using buffer local variables
     signs = function(bufnr, client_id)
@@ -535,17 +599,18 @@ vim.lsp.diagnostic.on_publish_diagnostics, {
     -- No buffer local variable set, so just enable by default
     if not ok then
         return true
-    end
+        end
 
-    return result
-end,
--- Disable a feature
-update_in_insert = false,
+        return result
+        end,
+        -- Disable a feature
+        update_in_insert = false,
 }
 )
 
 -- Clangd SETUP
 -- require'lspconfig'.clangd.setup{on_attach=on_attach_vim}
+-- require("clangd_extensions").setup()
 
 -- CCLS SETUP
 require'lspconfig'.ccls.setup{
@@ -558,14 +623,13 @@ init_options = {
 }
 
 -- JEDI (python)
---require'lspconfig'.jedi_language_server.setup{on_attach=require'completion'.on_attach}
 --vim.lsp.set_log_level("debug")
 require'lspconfig'.jedi_language_server.setup{
-on_attach=require'completion'.on_attach,
-cmd = { 'jedi-language-server'},
-filetypes = { 'python' },
-root_dir = function(fname)
-return vim.fn.getcwd()
+--    on_attach=require'completion'.on_attach,
+--    cmd = { 'jedi-language-server'},
+    filetypes = { 'python' },
+    root_dir = function(fname)
+        return vim.fn.getcwd()
     end,
     single_file_support = false,
     }
