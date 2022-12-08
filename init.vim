@@ -24,27 +24,27 @@ Plug 'hrsh7th/vim-vsnip'
 "    Plug 'prabirshrestha/asyncomplete.vim'
 "    Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
-    " Plug 'nvim-lua/completion-nvim'
-    Plug 'scrooloose/NERDTree'
-    Plug 'preservim/nerdcommenter'
-    Plug 'jiangmiao/auto-pairs'
-    Plug 'iCyMind/NeoSolarized'
-    Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
-    Plug 'jremmen/vim-ripgrep'
-    Plug 'mbbill/undotree'
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    Plug 'junegunn/fzf.vim'
-    Plug 'christoomey/vim-tmux-navigator'
-    Plug 'morhetz/gruvbox'
-    Plug 'jaxbot/semantic-highlight.vim'
-    Plug 'jackguo380/vim-lsp-cxx-highlight'
+" Plug 'nvim-lua/completion-nvim'
+Plug 'scrooloose/NERDTree'
+Plug 'preservim/nerdcommenter'
+Plug 'jiangmiao/auto-pairs'
+Plug 'iCyMind/NeoSolarized'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'jremmen/vim-ripgrep'
+Plug 'mbbill/undotree'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'morhetz/gruvbox'
+Plug 'jaxbot/semantic-highlight.vim'
+Plug 'jackguo380/vim-lsp-cxx-highlight'
 
-    Plug 'RishabhRD/popfix'
-    Plug 'RishabhRD/nvim-lsputils'
-    Plug 'm-pilia/vim-ccls'
-    Plug 'folke/lsp-colors.nvim'
-    " Plug 'puremourning/vimspector' <--- uncomment if debugger required
+Plug 'RishabhRD/popfix'
+Plug 'RishabhRD/nvim-lsputils'
+Plug 'm-pilia/vim-ccls'
+Plug 'folke/lsp-colors.nvim'
+" Plug 'puremourning/vimspector' <--- uncomment if debugger required
 
 call plug#end()
 
@@ -62,11 +62,6 @@ set t_Co=256
 let g:gruvbox_contrast_dark = "hard"
 let g:gruvbox_invert_selection = "0"
 colorscheme gruvbox
-"colorscheme NeoSolarized
-
-" Additional option in cale in system is too old version of node -> link
-" manualy recompile one
-" let g:coc_node_path = "/home/p.las2/TOOLS/node-v10.12.0/out/Release/node"
 
 "set nocompatible
 set background=dark
@@ -269,12 +264,15 @@ let g:fzf_preview_use_dev_icons = 0
 let g:fzf_rg_color = 'fg:#ebdbb2,bg:#282828,hl:#fabd2f,fg+:#ebdbb2,bg+:#3c3836,hl+:#fabd2f,info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#665c54'
 " FZF mapping
 nnoremap <leader>f :BLines  
+nnoremap <leader>m <S-%>
 nnoremap <S-f> :RgProj 
 nnoremap <C-f> :RgProjAdv 
 
 nnoremap <A-f> :Files<CR>
 nnoremap <A-b> :Buffers<CR>
 
+" find in matching braces
+nnoremap <leader>ff v%<Esc>/\%V
 
 " TODO: Implement a program that shortens the path in each line
 let transformer = "| awk -F: 'BEGIN { OFS = FS } {$3 = $3 \":\" $2; print}'"
@@ -285,32 +283,6 @@ command! -bang -nargs=* RgAdvAll1
             \   1,
             \   { 'options': '--delimiter=: --with-nth=4..' },
             \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
-
-command! -bang -nargs=* RgAdv
-            \ call fzf#vim#grep(
-            \   'rg -g "!bt/**" -g "!Test/**" --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')), 1,
-            \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
-
-" TODO -> fix path to use some project WS variable -> currently hardcoded P4FS
-" but in custom project it cause problem
-" TODO -> implement WS that link compile commands etc
-command! -bang -nargs=* RgAdvAll
-            \ call fzf#vim#grep(
-            \   'rg -g "!bt/**" -g "!Test/**" --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')).' ${P4FS}/${P4CLIENT}'..transformer, 1,
-            \   fzf#vim#with_preview(g:fzf_preview_window1), <bang>0)
-
-command! -bang -nargs=* RgAdvOld
-            \ call fzf#vim#grep(
-            \   'grep -rni -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')), 1,
-            \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
-
-
-command! -bang -nargs=* RgProjOLD
-            \ call fzf#vim#grep(
-            \   'rg --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')).' '.(len($POJECTWORKSPACE)>0?$PROJECTWORKSPACE:'.'), 1,
-            \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
-
-
 
 function! PrepareSkipRg()
     let retString = ''
@@ -344,10 +316,6 @@ nnoremap <leader>q :bw <CR>
 " Make <leader>+m to go to matchin pairs
 nnoremap <leader>m <S-%>
 vnoremap <leader>m <S-%>
-
-" TODO Find in matchin braces block
-" nnoremap <leader>o <ESC>vi{<ESC>/\%V<q-args>
-" command! -bang -nargs=1 findIn <ESC>vi{<ESC>/\%V<args>
 
 " Map yank (copy) command to copy data into vim and clipboard buffer
 set clipboard+=unnamedplus
@@ -422,25 +390,14 @@ function VerticalBufferSplit (arg1)
     execute 'vert sb' a:arg1
 endfunction
 
-" Use <Tab> and <S-Tab> to navigate through popup menu
-" inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-" imap <silent> <C-Space> <Plug>(completion_trigger)
-
 " Set completeopt to have a better completion experience
-set completeopt-=preview
-set completeopt=menuone,noinsert,noselect
-let g:completition_matching_strategy_list = ['exact', 'substring', 'fuzzy']
+" set completeopt-=preview
+" set completeopt=menuone,noinsert,noselect
+" let g:completition_matching_strategy_list = ['exact', 'substring', 'fuzzy']
 
 " Avoid showing message extra message when using completion
 set shortmess+=c
 
-" Use completion-nvim in every buffer
-" autocmd BufEnter * lua require'completion'.on_attach()
-
-"use omni completion provided by lsp
-"TODO consider if for python instead of C/C++?
-" autocmd Filetype python setlocal omnifunc=v:lua.vim.lsp.omnifunc
 
 " some shortcuts
 nnoremap <silent> <leader>gs    <cmd>lua vim.lsp.buf.declaration()<CR>
@@ -496,169 +453,5 @@ if has('wsl')
                         \ }
 endif
 
-lua << EOF
--- Set up nvim-cmp.
-  local cmp = require'cmp'
-
-  local has_words_before = function()
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-
-local feedkey = function(key, mode)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-end
-
-  cmp.setup({
-    snippet = {
-      -- REQUIRED - you must specify a snippet engine
-      expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-      end,
-    },
-    window = {
-      -- completion = cmp.config.window.bordered(),
-      -- documentation = cmp.config.window.bordered(),
-    },
-    mapping = cmp.mapping.preset.insert({
-    ["<Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_next_item()
-          elseif vim.fn["vsnip#available"](1) == 1 then
-            feedkey("<Plug>(vsnip-expand-or-jump)", "")
-          elseif has_words_before() then
-            cmp.complete()
-          else
-            fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
-          end
-        end, { "i", "s" }),
-
-    ["<S-Tab>"] = cmp.mapping(function()
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif vim.fn["vsnip#jumpable"](-1) == 1 then
-        feedkey("<Plug>(vsnip-jump-prev)", "")
-      end
-   end, { "i", "s" }),
-      ['<C-Space>'] = cmp.mapping.complete(),
-      ['<C-e>'] = cmp.mapping.abort(),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-    }),
-    sources = cmp.config.sources({
-      { name = 'nvim_lsp' },
-      { name = 'vsnip' }, -- For vsnip users.
-    }, {
-      { name = 'buffer' },
-    })
-  })
-
-  -- Set configuration for specific filetype.
-  cmp.setup.filetype('gitcommit', {
-    sources = cmp.config.sources({
-      { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
-    }, {
-      { name = 'buffer' },
-    })
-  })
-
-  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline({ '/', '?' }, {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = {
-      { name = 'buffer' }
-    }
-  })
-
-  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline(':', {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = cmp.config.sources({
-      { name = 'path' }
-    }, {
-      { name = 'cmdline' }
-    })
-  })
-
-
-  require("mason").setup()
-  require("mason-lspconfig").setup{
-  ensure_installed = { "ccls" },
-  }
-
--- Set up lspconfig. jedi_language_server, ccls
--- local capabilities = require('cmp_nvim_lsp').default_capabilities()
--- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
--- require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
- 
-
-
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-vim.lsp.diagnostic.on_publish_diagnostics, {
-    -- Enable underline, use default values
-    underline = true,
-    -- Enable virtual text, override spacing to 4
-    virtual_text = {
-        spacing = 4,
-        prefix = '~',
-    },
-    -- Use a function to dynamically turn signs off
-    -- and on, using buffer local variables
-    signs = function(bufnr, client_id)
-    local ok, result = pcall(vim.api.nvim_buf_get_var, bufnr, 'show_signs')
-    -- No buffer local variable set, so just enable by default
-    if not ok then
-        return true
-        end
-
-        return result
-        end,
-        -- Disable a feature
-        update_in_insert = false,
-}
-)
-
--- Clangd SETUP
--- require'lspconfig'.clangd.setup{on_attach=on_attach_vim}
--- require("clangd_extensions").setup()
-
--- CCLS SETUP
-require'lspconfig'.ccls.setup{
-on_attach=on_attach_vim,
-init_options = {
-    highlight = {
-        lsRanges = true;
-        }
-    }
-}
-
--- JEDI (python)
---vim.lsp.set_log_level("debug")
-require'lspconfig'.jedi_language_server.setup{
---    on_attach=require'completion'.on_attach,
---    cmd = { 'jedi-language-server'},
-    filetypes = { 'python' },
-    root_dir = function(fname)
-        return vim.fn.getcwd()
-    end,
-    single_file_support = false,
-    }
-
--- LSP coloring
-require("lsp-colors").setup({
-Error = "#db4b4b",
-Warning = "#e0af68",
-Information = "#0db9d7",
-Hint = "#10B981"
-})
-
--- MAPPING FOR lsp command (nice window with preview)
-vim.lsp.callbacks['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
-vim.lsp.callbacks['textDocument/references'] = require'lsputil.locations'.references_handler
-vim.lsp.callbacks['textDocument/definition'] = require'lsputil.locations'.definition_handler
-vim.lsp.callbacks['textDocument/declaration'] = require'lsputil.locations'.declaration_handler
-vim.lsp.callbacks['textDocument/typeDefinition'] = require'lsputil.locations'.typeDefinition_handler
-vim.lsp.callbacks['textDocument/implementation'] = require'lsputil.locations'.implementation_handler
-vim.lsp.callbacks['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
-vim.lsp.callbacks['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
-
-EOF
+" Load my modules
+:lua require('myModules')
