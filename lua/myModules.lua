@@ -95,8 +95,11 @@ require'lspconfig'.ccls.setup{
         highlight = {
             lsRanges = true;
         }
-    }
+    },
+    config=config
+
 }
+-- require("ccls").setup(config)
 
 -- JEDI (python)
 --vim.lsp.set_log_level("debug")

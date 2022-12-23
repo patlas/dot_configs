@@ -42,8 +42,12 @@ Plug 'jackguo380/vim-lsp-cxx-highlight'
 
 Plug 'RishabhRD/popfix'
 Plug 'RishabhRD/nvim-lsputils'
-Plug 'm-pilia/vim-ccls'
+"OLD VIM-CCLS
+" Plug 'm-pilia/vim-ccls'
+Plug 'ranjithshegde/ccls.nvim' 
 Plug 'folke/lsp-colors.nvim'
+" Modern coloring for C/C++
+Plug 'bfrg/vim-cpp-modern'
 " Plug 'puremourning/vimspector' <--- uncomment if debugger required
 
 call plug#end()
@@ -70,6 +74,7 @@ set cmdheight=2
 set updatetime=1000
 set shortmess+=c
 set number
+" set relativenumber
 set clipboard=unnamedplus
 set tabstop=8
 set softtabstop=0
@@ -87,7 +92,7 @@ set nowritebackup
 set undodir=~/.vim/undodir
 set undofile
 set incsearch
-
+set scrolloff=8
 set signcolumn=yes
 
 "Auto braces completition
@@ -169,6 +174,7 @@ let g:NERDTrimTrailingWhitespace = 1
 let g:NERDToggleCheckAllLines = 1
 let g:NERDCustomDelimiters = { 'c': { 'left': '//' } }
 let g:NERDTreeChDirMode = 2
+let g:NERDTreeMapToggleFiles = 'Q' "disable <SHIFT>f to toggle files -> used by regex
 
 
 " mapleader to space
@@ -378,22 +384,12 @@ endfunction
 
 nmap <leader>j :call GotoJump()<CR>
 
-
-" split current buffer vertically
-" nnoremap <C-s> :Vsb
-" command -nargs=1 Vsb call VerticalBufferSplit(<f-args>)
-
 " let current_buffer_nr = bufnr("%")
 nnoremap <C-s> :call VerticalBufferSplit(bufnr("%"))<CR> 
 
 function VerticalBufferSplit (arg1)
     execute 'vert sb' a:arg1
 endfunction
-
-" Set completeopt to have a better completion experience
-" set completeopt-=preview
-" set completeopt=menuone,noinsert,noselect
-" let g:completition_matching_strategy_list = ['exact', 'substring', 'fuzzy']
 
 " Avoid showing message extra message when using completion
 set shortmess+=c
@@ -452,6 +448,17 @@ if has('wsl')
                         \   'cache_enabled': 1,
                         \ }
 endif
+
+" VIM-CPP-Modern coloring
+" Disable function highlighting (affects both C and C++ files)
+let g:cpp_function_highlight = 1
+" Enable highlighting of C++11 attributes
+let g:cpp_attributes_highlight = 1
+" Highlight struct/class member variables (affects both C and C++ files)
+let g:cpp_member_highlight = 1
+" Put all standard C and C++ keywords under Vim's highlight group 'Statement'
+" (affects both C and C++ files)
+let g:cpp_simple_highlight = 1
 
 " Load my modules
 :lua require('myModules')
