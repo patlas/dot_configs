@@ -33,3 +33,17 @@ sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.
 2) for local
     mkdir -p ~/.local/share/xfce4/terminal/colorschemes
     cp *.theme ~/.local/share/xfce4/terminal/colorschemes/
+
+
+## Configuring custom VIM workspace grepping
+1) Create .vimws file inside project
+2) Define variables:
+- pws -> <string> variable responsibe for RegProjAdv - where to search RegEx (beginning directory)
+- vccbws -> <string> variable responsile for RegProj - where to search RegEx (beginning direcotry)
+- skip -> <string> which directory (names) skip during grep (space separated - string MUST begin with space)
+
+Exemplary content of ".vimws" file:
+
+let g:pws = "../../../"
+let g:vccbws = "."
+let g:skip = " bt/ Test/ Middleware OAM VNMB VTMB"
