@@ -49,6 +49,8 @@ Plug 'folke/lsp-colors.nvim'
 " Modern coloring for C/C++
 Plug 'bfrg/vim-cpp-modern'
 " Plug 'puremourning/vimspector' <--- uncomment if debugger required
+Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
+
 
 call plug#end()
 
@@ -260,6 +262,7 @@ let g:vimspector_enable_mappings = 'HUMAN'
 
 " set rip grep root folder (if find file/direcotry [compile_commands.json/.git] treat it as root)
 let g:rg_root_types = ['compile_commands.json', '.git']
+let g:fzf_command_prefix = "Fzf"
 
 " FZF add preview window      
 let g:fzf_preview_window = 'right:60%:nowrap' 
@@ -309,6 +312,12 @@ command! -bang -nargs=* RgProjAdv
             \ call fzf#vim#grep(
             \   'rg --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')).' '.(get(g:, "pws", ".")), 1,
             \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
+
+
+" TODO TESTY
+
+" require("ccls").callHierarchy(callee)
+" command! Patlas call fzf#run({'sink': function(':CclsIncomingCallsHierarchy')})
 
 " vim swithing buffers using Tab
 nnoremap <Tab> :bn <CR> 
@@ -368,21 +377,24 @@ xnoremap <S-Tab> <gv
 " nnoremap <C-h> :RgAdvAll - uzyc jako podkreslenie 
 
 " show jump list and select which one to go to
-function! GotoJump()
-    jumps
-    let j = input("Please select your jump: ")
-    if j != ''
-        let pattern = '\v\c^\+'
-        if j =~ pattern
-            let j = substitute(j, pattern, '', 'g')
-            execute "normal " . j . "\<c-i>"
-        else
-            execute "normal " . j . "\<c-o>"
-        endif
-    endif
-endfunction
 
-nmap <leader>j :call GotoJump()<CR>
+" DEPRECATED - currently use fzf-preview plugin
+" function! GotoJump()
+"     jumps
+"     let j = input("Please select your jump: ")
+"     if j != ''
+"         let pattern = '\v\c^\+'
+"         if j =~ pattern
+"             let j = substitute(j, pattern, '', 'g')
+"             execute "normal " . j . "\<c-i>"
+"         else
+"             execute "normal " . j . "\<c-o>"
+"         endif
+"     endif
+" endfunction
+" nmap <leader>j :call GotoJump()<CR>
+"
+nmap <leader>j :FzfPreviewJumpsRpc<CR>
 
 " let current_buffer_nr = bufnr("%")
 nnoremap <C-s> :call VerticalBufferSplit(bufnr("%"))<CR> 
