@@ -190,6 +190,7 @@ nnoremap k gk
 nnoremap gk k
 
 "Move in insert mode using CTRL+hjkl
+let g:AutoPairsMapCh = 0 " disable AutoPair mapping C-H
 inoremap <C-k> <C-o>gk
 inoremap <C-h> <Left>
 inoremap <C-l> <Right>
@@ -362,7 +363,7 @@ set clipboard+=unnamedplus
 "inoremap <buffer> <silent> <C-l> <ESC>:call AutoPairsJump()<CR>a
 
 " ctrl+l go to matchin pair
-inoremap <silent> <C-l> <ESC>:call AutoPairsJump()<CR>a
+" inoremap <silent> <C-l> <ESC>:call AutoPairsJump()<CR>a
 
 " alt+l go to the end of line
 inoremap <M-l> <ESC>$a
