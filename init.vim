@@ -96,6 +96,7 @@ set undofile
 set incsearch
 set scrolloff=8
 set signcolumn=yes
+set diffopt+=iwhite,icase "ignore whitespaces and case in diff mode
 
 "Auto braces completition
 set autoindent
@@ -181,6 +182,18 @@ let g:NERDTreeMapToggleFiles = 'Q' "disable <SHIFT>f to toggle files -> used by 
 
 " mapleader to space
 let mapleader = " "
+
+"Make basic movements work better with wrapped lines
+nnoremap j gj
+nnoremap gj j
+nnoremap k gk
+nnoremap gk k
+
+"Move in insert mode using CTRL+hjkl
+inoremap <C-k> <C-o>gk
+inoremap <C-h> <Left>
+inoremap <C-l> <Right>
+inoremap <C-j> <C-o>gj
 
 "UndoTree config
 let g:undotree_WindowLayout = 2
@@ -272,13 +285,13 @@ let g:fzf_preview_use_dev_icons = 0
 
 let g:fzf_rg_color = 'fg:#ebdbb2,bg:#282828,hl:#fabd2f,fg+:#ebdbb2,bg+:#3c3836,hl+:#fabd2f,info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#665c54'
 " FZF mapping
-nnoremap <leader>f :BLines  
+nnoremap <leader>f :FzfBLines  
 nnoremap <leader>m <S-%>
 nnoremap <S-f> :RgProj 
 nnoremap <C-f> :RgProjAdv 
 
-nnoremap <A-f> :Files<CR>
-nnoremap <A-b> :Buffers<CR>
+nnoremap <A-f> :FzfFiles<CR>
+nnoremap <A-b> :FzfBuffers<CR>
 
 " find in matching braces
 nnoremap <leader>ff v%<Esc>/\%V
@@ -305,16 +318,25 @@ endfunction
 
 command! -bang -nargs=* RgProj
             \ call fzf#vim#grep(
-            \   'rg --glob-case-insensitive '.(PrepareSkipRg()).' --line-number -H --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')).' '.(get(g:, "vccbws", ".")), 1,
+            \   'rg --glob-case-insensitive '.(PrepareSkipRg()).' --line-number -H --no-heading --color=always --smart-case -F -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')).' '.(get(g:, "vccbws", ".")), 1,
             \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
 
 command! -bang -nargs=* RgProjAdv
             \ call fzf#vim#grep(
-            \   'rg --column --line-number --no-heading --color=always --smart-case -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')).' '.(get(g:, "pws", ".")), 1,
+            \   'rg --column --line-number --no-heading --color=always --smart-case -F -- '. (len(<q-args>) > 0 ? <q-args> : expand('<cword>')).' '.(get(g:, "pws", ".")), 1,
             \   fzf#vim#with_preview(g:fzf_preview_window), <bang>0)
 
 
 " TODO TESTY
+"
+" :g//
+"
+" wyswietla wszystkie linie z pliku ktore pasuja do ostatniego wyszukiwania
+"
+" :g//z#=5 - wyswietla te linie z 5liniowym kontekstem
+"
+" :/\[[TR]X\]/ - wyszukuje pierwszy komunikat w logu
+" :g// - wyswietla wszystkie komunikaty w logu
 
 " require("ccls").callHierarchy(callee)
 " command! Patlas call fzf#run({'sink': function(':CclsIncomingCallsHierarchy')})
