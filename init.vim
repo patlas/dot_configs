@@ -94,7 +94,7 @@ set nowritebackup
 set undodir=~/.vim/undodir
 set undofile
 set incsearch
-set scrolloff=8
+set scrolloff=1
 set signcolumn=yes
 set diffopt+=iwhite,icase "ignore whitespaces and case in diff mode
 
@@ -370,8 +370,8 @@ inoremap <M-l> <ESC>$a
 nnoremap <M-l> $
 
 " alt+h go to the beginning of line
-inoremap <M-h> <ESC>0i
-nnoremap <M-h> 0
+inoremap <M-h> <ESC>^i
+nnoremap <M-h> ^
 
 " Set alt enter to go to new line while in insert mode
 inoremap <silent> <M-CR> <ESC>$o
