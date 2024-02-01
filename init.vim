@@ -116,9 +116,9 @@ highlight Normal ctermfg=blue
 "highlight Normal ctermfg=gray
 
 "Highlight line longer than colorcolumn size
-highlight ColorColumn ctermbg=NONE
-highlight OverLength ctermbg=NONE cterm=bold
-match OverLength /\%81v.\+/
+"highlight ColorColumn ctermbg=NONE
+"highlight OverLength ctermbg=NONE cterm=bold
+"match OverLength /\%81v.\+/
 
 
 "VIM-AIRLINE extension for status bar (top, bottom)
