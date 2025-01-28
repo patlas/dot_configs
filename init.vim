@@ -178,6 +178,7 @@ let g:NERDToggleCheckAllLines = 1
 let g:NERDCustomDelimiters = { 'c': { 'left': '//' } }
 let g:NERDTreeChDirMode = 2
 let g:NERDTreeMapToggleFiles = 'Q' "disable <SHIFT>f to toggle files -> used by regex
+let g:NERDTreeMapToggleFileLines = 'QQ' "disable <SHIFT>fl to show file lines -> used by regex
 
 
 " mapleader to space
@@ -259,14 +260,48 @@ nnoremap <leader>nt :call ToggleNerdTree()<CR>
 " let g:yggdrasil_no_default_maps = 1
 " au FileType yggdrasil nmap <silent> <buffer> <C-k> <Plug>(yggdrasil-toggle-node)
 "let g:ccls_log_file = expand('~/Desktop/my_log_file.txt')
-let g:ccls_levels = 5
+" ---- CCLS
+" let g:ccls_levels = 5
+"
+" let g:ccls_size = 50
+" let g:ccls_position = 'botright'
+" let g:ccls_orientation = 'horizontal'
+"
+" let g:ccls_float_width = 50
+" let g:ccls_float_height = 20
+"
+" ------
 
-let g:ccls_size = 50
-let g:ccls_position = 'botright'
-let g:ccls_orientation = 'horizontal'
+" LSP coloring for C/C++
+hi @lsp.type.namespace	guifg=#427b58
+hi @lsp.type.type	guifg=#fabd2f
+hi @lsp.type.class	guifg=#b16286
+hi @lsp.type.enum	guifg=#fabd2f
+hi @lsp.type.struct	guifg=#b16286
+hi @lsp.type.parameter	guifg=#83a598
+hi @lsp.type.variable	guifg=#ebdbb2
+hi @lsp.type.property	guifg=#ebdbb2
+hi @lsp.type.enumMember	guifg=#79748e
+hi @lsp.type.function	guifg=#b8bb26
+hi @lsp.type.method	guifg=#98971a
+hi @lsp.type.macro	guifg=#8ec07c
+hi @lsp.type.comment	guifg=#928374
+hi @lsp.type.string	guifg=#966750
+hi @lsp.type.number	guifg=#b57614
+hi @lsp.type.regexp	guifg=#af3a03
+hi @lsp.type.operator	guifg=#ebdbb2
+"hi @lsp.type.decorator	guifg=#
+"hi @lsp.type.event	guifg=#
+"hi @lsp.type.interface	guifg=#
+"hi @lsp.type.keyword	guifg=#
+"hi @lsp.type.modifier	guifg=#
+"hi @lsp.type.typeParameter	guifg=#
+" hi @lsp.typemod.function.classScope  guifg=Orange
+" hi @lsp.typemod.variable.classScope  guifg=Orange
+" hi @lsp.typemod.variable.fileScope   guifg=Orange
+" hi @lsp.typemod.variable.globalScope guifg=Red
+" hi @lsp.type.macro	guifg=#79748e
 
-let g:ccls_float_width = 50
-let g:ccls_float_height = 20
 
 " VimSpector
 let g:vimspector_enable_mappings = 'HUMAN'
@@ -395,6 +430,16 @@ nnoremap <leader>diff :w !diff % -<CR>
 xnoremap <Tab> >gv
 xnoremap <S-Tab> <gv
 
+" set d for delete, D delete til line end and mixed with leader for cut
+nnoremap x "_x
+nnoremap d "_d
+nnoremap D "_D
+vnoremap d "_d
+
+" nnoremap <leader>d ""d
+" nnoremap <leader>D ""D
+" vnoremap <leader>d ""d
+
 " highligh variables under cursor
 ":autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
 " nnoremap <C-h> :RgAdvAll - uzyc jako podkreslenie 
@@ -473,12 +518,12 @@ if has('wsl')
     let g:clipboard = {
                 \   'name': 'wslclipboard',
                 \   'copy': {
-                    \      '+': 'win32yank.exe -i --crlf',
-                    \      '*': 'win32yank.exe -i --crlf',
+                    \      '+': '/mnt/c/win32yank/win32yank.exe -i --crlf',
+                    \      '*': '/mnt/c/win32yank/win32yank.exe -i --crlf',
                     \    },
                     \   'paste': {
-                        \      '+': 'win32yank.exe -o --lf',
-                        \      '*': 'win32yank.exe -o --lf',
+                        \      '+': '/mnt/c/win32yank/win32yank.exe -o --lf',
+                        \      '*': '/mnt/c/win32yank/win32yank.exe -o --lf',
                         \   },
                         \   'cache_enabled': 1,
                         \ }

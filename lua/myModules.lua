@@ -89,17 +89,18 @@ require("mason-lspconfig").setup{
 
 
 -- CCLS SETUP
-require'lspconfig'.ccls.setup{
-    on_attach=on_attach_vim,
-    init_options = {
-        highlight = {
-            lsRanges = true;
-        }
-    },
-    config=config
+-- require'lspconfig'.ccls.setup{
+--     on_attach=on_attach_vim,
+--     init_options = {
+--         highlight = {
+--             lsRanges = true;
+--         }
+--     },
+--     config=config
+--
+-- }
 
-}
--- require("ccls").setup(config)
+require("lspconfig").clangd.setup {}
 
 -- JEDI (python)
 --vim.lsp.set_log_level("debug")
@@ -112,7 +113,7 @@ require'lspconfig'.jedi_language_server.setup{
 }
 
 -- LUA
-require("lspconfig").sumneko_lua.setup {}
+require("lspconfig").lua_ls.setup {}
 
 -- LSP coloring
 require("lsp-colors").setup({
