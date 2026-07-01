@@ -41,17 +41,17 @@ vim.keymap.set("v", "<leader>c", "gc", { remap = true, desc = "Komentuj zaznacze
 -- Terminale na dole ekranu
 -- Leader+t: Otwiera terminal i kopiuje ścieżkę bieżącego pliku do schowka systemowego (+)
 vim.keymap.set("n", "<leader>t", function()
-  vim.fn.setreg("+", vim.fn.expand("%:p"))
-  vim.cmd("belowright split term://bash")
-  vim.cmd("startinsert")
+    vim.fn.setreg("+", vim.fn.expand("%:p"))
+    vim.cmd("belowright split term://bash")
+    vim.cmd("startinsert")
 end, { silent = true, desc = "Terminal na dole (kopiuj ścieżkę)" })
 
 -- Shift+t: Otwiera terminal bezpośrednio w katalogu bieżącego pliku
 vim.keymap.set(
-  "n",
-  "<S-t>",
-  ":belowright split term://bash -c 'cd %:p:h; exec bash'<CR>i",
-  { silent = true, desc = "Terminal w katalogu pliku" }
+    "n",
+    "<S-t>",
+    ":belowright split term://bash -c 'cd %:p:h; exec bash'<CR>i",
+    { silent = true, desc = "Terminal w katalogu pliku" }
 )
 
 -- Wcięcia w trybie Visual (z zachowaniem zaznaczenia)
@@ -60,8 +60,8 @@ vim.keymap.set("x", "<S-Tab>", "<gv", { desc = "Zmniejsz wcięcie zaznaczenia" }
 
 -- Leader+hh: Podświetla wszystkie wystąpienia słowa pod kursorem (używa grupy IncSearch)
 vim.keymap.set("n", "<leader>hh", function()
-  local cword = vim.fn.expand("<cword>")
-  vim.cmd(string.format("match IncSearch /\\<%s\\>/", cword))
+    local cword = vim.fn.expand("<cword>")
+    vim.cmd(string.format("match IncSearch /\\<%s\\>/", cword))
 end, { silent = true, desc = "Podświetl słowo pod kursorem" })
 
 
@@ -70,13 +70,62 @@ end, { silent = true, desc = "Podświetl słowo pod kursorem" })
 -- <Ctrl-f> Grep interface
 local ok, snacks = pcall(require, "snacks")
 if ok then
-  -- F (Shift + f) -> Wyszukiwanie słowa pod kursorem (Normal) lub zaznaczenia (Visual)
-  vim.keymap.set({ "n", "x" }, "F", function()
-    snacks.picker.grep_word()
-  end, { desc = "Snacks Picker: Word / Selection" })
+    -- F (Shift + f) -> Wyszukiwanie słowa pod kursorem (Normal) lub zaznaczenia (Visual)
+    vim.keymap.set({ "n", "x" }, "F", function()
+        snacks.picker.grep_word()
+    end, { desc = "Snacks Picker: Word / Selection" })
 
-  -- Ctrl + f -> Live Grep w całym projekcie
-  vim.keymap.set({ "n", "x" }, "<C-f>", function()
-    snacks.picker.grep()
-  end, { desc = "Snacks Picker: Live Grep" })
+    -- Ctrl + f -> Live Grep w całym projekcie
+    vim.keymap.set({ "n", "x" }, "<C-f>", function()
+        snacks.picker.grep()
+    end, { desc = "Snacks Picker: Live Grep" })
+end
+
+
+-- VimWS custom support
+if ok then
+    vim.keymap.set({ "n", "x" }, "<C-f>", function()
+        -- Pobieramy ścieżkę do potencjalnego pliku konfiguracyjnego w projekcie
+        local ws_file = vim.fn.getcwd() .. "/.vimws.lua"
+
+        -- Domyślne wartości, gdyby pliku .vimws.lua nie było
+        local search_dirs = { vim.fn.getcwd() }
+        local exclude_globs = {}
+
+        -- Sprawdzamy czy plik istnieje i czy da się go odczytać
+        if vim.fn.filereadable(ws_file) == 1 then
+            -- Bezpiecznie ładujemy plik konfiguracyjny projektu za pomocą chunków Lua
+            local config_func, err = loadfile(ws_file)
+            if config_func then
+                local ws_config = config_func()
+                if type(ws_config) == "table" then
+                    -- Przypisujemy sparsowane ścieżki i filtry wykluczeń
+                    search_dirs = ws_config.projws or search_dirs
+                    exclude_globs = ws_config.skip or exclude_globs
+                end
+            else
+                vim.notify("Błąd ładowania .vimws.lua: " .. tostring(err), vim.log.levels.ERROR)
+            end
+        end
+
+        if snacks.config and snacks.config.picker then
+            snacks.config.picker.previewers = snacks.config.picker.previewers or {}
+            snacks.config.picker.previewers.file = snacks.config.picker.previewers.file or {}
+            snacks.config.picker.previewers.file.max_size = 20 * 1024 * 1024
+            -- Wszystko powyżej 1MB wyłączy kolorowanie aby przyspieszyć wyświetlanie
+            snacks.config.picker.previewers.file.ft_max_size = 1024 * 1024
+        end
+
+        -- Wywołujemy picker Snacks z dynamicznymi argumentami z pliku projektu
+        snacks.picker.grep({
+            prompt = "Project Grep    ",
+            dirs = search_dirs,       -- Szuka wyłącznie w tych katalogach
+            exclude = exclude_globs,  -- Ignoruje pliki i foldery z listy skip
+            previewers = {
+                file = {
+                max_size = 10 * 1024 * 1024,
+                },
+            },
+        })
+    end, { desc = "Snacks Picker: Workspace Grep (.vimws.lua)" })
 end
