@@ -32,7 +32,7 @@ return {
           -- Tab przechodzi w dół TYLKO podczas wyszukiwania (/)
           ["<Tab>"] = {
             function(cmp)
-              if vim.fn.getcmdtype() == "/" or vim.fn.getcmdtype() == "?" then
+              if vim.fn.getcmdtype() == "/" or vim.fn.getcmdtype() == "?" or vim.fn.getcmdtype() == ":" then
                 return cmp.select_next() 
               end
             end,
@@ -42,7 +42,7 @@ return {
           -- Shift + Tab przechodzi w górę TYLKO podczas wyszukiwania (/)
           ["<S-Tab>"] = {
             function(cmp)
-              if vim.fn.getcmdtype() == "/" or vim.fn.getcmdtype() == "?" then
+              if vim.fn.getcmdtype() == "/" or vim.fn.getcmdtype() == "?" or vim.fn.getcmdtype() == ":" then
                 return cmp.select_prev() 
               end
             end,
