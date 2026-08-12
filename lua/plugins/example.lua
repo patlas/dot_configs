@@ -171,6 +171,18 @@ return {
         end,
     },
 
+    -- {
+    --     "nvim-neo-tree/neo-tree.nvim",
+    --     opts = {
+    --         window = {
+    --             mappings = {
+    --                 -- Przycisk 'A' (Shift + a) wewnątrz Neo-tree zmaksymalizuje / przywróci szerokość okna
+    --                 ["A"] = "toggle_node_width",
+    --             },
+    --         },
+    --     },
+    -- },
+
     -- the opts function can also be used to change the default opts:
     -- {
     --   "nvim-lualine/lualine.nvim",
@@ -183,7 +195,17 @@ return {
     --     })
     --   end,
     -- },
-
+  {
+    "nvim-lualine/lualine.nvim",
+    opts = function(_, opts)
+      -- Podmieniamy pierwszy element (indeks 4) w sekcji lualine_c,
+      -- którym w LazyVim zawsze jest ucięta ścieżka pliku.
+      opts.sections.lualine_c[4] = {
+        "filename",
+        path = 1, -- Pełna ścieżka względna od katalogu głównego projektu
+      }
+    end,
+  },
     -- or you can return new options to override all the defaults
     -- {
     --   "nvim-lualine/lualine.nvim",

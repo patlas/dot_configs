@@ -1,4 +1,2 @@
-# 💤 LazyVim
-
-A starter template for [LazyVim](https://github.com/LazyVim/LazyVim).
-Refer to the [documentation](https://lazyvim.github.io/installation) to get started.
+# see file vimws.lua_template:
+Move this file into project dir nad rename to .vimws.lua -> set proper project configuration to allow file skipping
