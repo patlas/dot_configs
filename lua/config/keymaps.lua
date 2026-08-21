@@ -71,8 +71,23 @@ end, { silent = true, desc = "Podświetl słowo pod kursorem" })
 local ok, snacks = pcall(require, "snacks")
 if ok then
     -- F (Shift + f) -> Wyszukiwanie słowa pod kursorem (Normal) lub zaznaczenia (Visual)
+    -- Najpierw przechwytujemy słowo/zaznaczenie PRZED vim.ui.input,
+    -- bo prompt przejmuje fokus i traci kontekst trybu wizualnego.
+    -- Po edycji i zatwierdzeniu słowa uruchamiany jest grep (live = false),
+    -- a pole wyszukiwania w pickerze służy do dalszego filtrowania wyników.
     vim.keymap.set({ "n", "x" }, "F", function()
-        snacks.picker.grep_word()
+        local visual = snacks.picker.util.visual()
+        local default_word = visual and visual.text or vim.fn.expand("<cword>")
+
+        vim.ui.input({ prompt = "Grep Word    ", default = default_word }, function(search_term)
+            if not search_term or vim.trim(search_term) == "" then
+                return
+            end
+            snacks.picker.grep_word({
+                search = search_term, -- nadpisuje domyślne picker:word()
+                regex = true,          -- traktuj wzorzec jako wyrażenie regularne
+            })
+        end)
     end, { desc = "Snacks Picker: Word / Selection" })
 
     -- Ctrl + f -> Live Grep w całym projekcie
