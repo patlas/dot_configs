@@ -116,16 +116,28 @@ if ok then
             snacks.config.picker.previewers.file.ft_max_size = 1024 * 1024
         end
 
-        -- Wywołujemy picker Snacks z dynamicznymi argumentami z pliku projektu
-        snacks.picker.grep({
-            prompt = "Project Grep    ",
-            dirs = search_dirs,       -- Szuka wyłącznie w tych katalogach
-            exclude = exclude_globs,  -- Ignoruje pliki i foldery z listy skip
-            previewers = {
-                file = {
-                max_size = 10 * 1024 * 1024,
+        -- Najpierw pytamy użytkownika o słowo do wyszukania (prompt).
+        -- Po jego podaniu uruchamiamy grep jednorazowo (live = false),
+        -- dzięki czemu pole wyszukiwania w pickerze służy do dalszego
+        -- fuzzowego filtrowania wyników — analogicznie jak Shift+F.
+        vim.ui.input({ prompt = "Project Grep    " }, function(search_term)
+            if not search_term or vim.trim(search_term) == "" then
+                return -- anulowano lub puste zapytanie — nie otwieraj pickera
+            end
+
+            -- Wywołujemy picker Snacks z dynamicznymi argumentami z pliku projektu
+            snacks.picker.grep({
+                prompt = "Filter Results    ",
+                live = false,             -- input filtruje wyniki, nie uruchamia grep ponownie
+                search = search_term,     -- wzorzec grep uruchamiany jeden raz
+                dirs = search_dirs,       -- Szuka wyłącznie w tych katalogach
+                exclude = exclude_globs,  -- Ignoruje pliki i foldery z listy skip
+                previewers = {
+                    file = {
+                        max_size = 10 * 1024 * 1024,
+                    },
                 },
-            },
-        })
+            })
+        end)
     end, { desc = "Snacks Picker: Workspace Grep (.vimws.lua)" })
 end
