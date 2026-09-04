@@ -171,17 +171,25 @@ return {
         end,
     },
 
-    -- {
-    --     "nvim-neo-tree/neo-tree.nvim",
-    --     opts = {
-    --         window = {
-    --             mappings = {
-    --                 -- Przycisk 'A' (Shift + a) wewnątrz Neo-tree zmaksymalizuje / przywróci szerokość okna
-    --                 ["A"] = "toggle_node_width",
-    --             },
-    --         },
-    --     },
-    -- },
+    -- Shift+A w eksploratorze plików (snacks.nvim) przełącza pełny ekran / powrót do sidebar
+    {
+        "folke/snacks.nvim",
+        opts = {
+            picker = {
+                sources = {
+                    explorer = {
+                        win = {
+                            list = {
+                                keys = {
+                                    ["A"] = "toggle_maximize",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
 
     -- the opts function can also be used to change the default opts:
     -- {
