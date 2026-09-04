@@ -191,6 +191,20 @@ return {
         },
     },
 
+    -- Wynik komend (np. :pwd) w natywnym pasku Neovima na dole ekranu
+    -- (jak w vanilla vim). Lualine zostaje widoczny - jest przesuniety
+    -- o linie w gore, a nie zakryty przez plynace okno.
+    -- Powiadomienia (vim.notify), LSP hover/signature, cmdline popup
+    -- nadal obsluguje noice - wylaczona jest tylko obsluga msg_show.
+    {
+        "folke/noice.nvim",
+        opts = {
+            messages = {
+                enabled = false, -- msg_show trafia do natywnego paska Neovima
+            },
+        },
+    },
+
     -- the opts function can also be used to change the default opts:
     -- {
     --   "nvim-lualine/lualine.nvim",
